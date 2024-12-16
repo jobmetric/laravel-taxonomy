@@ -615,7 +615,11 @@ class Taxonomy
 
         $locale = $locale ?? app()->getLocale();
 
-        if (getTaxonomyTypeArg($taxonomy->type, 'hierarchical') && $concat) {
+        $taxonomyType = TaxonomyType::type($taxonomy->type);
+
+        $hierarchical = $taxonomyType->hasHierarchical();
+
+        if ($hierarchical && $concat) {
             $names = [];
             $paths = TaxonomyPath::query()->select('path_id')->where([
                 'taxonomy_id' => $taxonomy_id
