@@ -1093,7 +1093,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => null,
             'translation' => [
-                'name' => 'A'
+                'en' => [
+                    'name' => 'A'
+                ],
             ],
         ]);
 
@@ -1101,7 +1103,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyA['data']->id,
             'translation' => [
-                'name' => 'B'
+                'en' => [
+                    'name' => 'B'
+                ],
             ],
         ]);
 
@@ -1109,7 +1113,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyB['data']->id,
             'translation' => [
-                'name' => 'C'
+                'en' => [
+                    'name' => 'C'
+                ],
             ],
         ]);
 
@@ -1117,7 +1123,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyC['data']->id,
             'translation' => [
-                'name' => 'D'
+                'en' => [
+                    'name' => 'D'
+                ],
             ],
         ]);
 
@@ -1125,7 +1133,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyA['data']->id,
             'translation' => [
-                'name' => 'E'
+                'en' => [
+                    'name' => 'E'
+                ],
             ],
         ]);
 
