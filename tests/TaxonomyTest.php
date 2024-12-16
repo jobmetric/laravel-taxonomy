@@ -1163,7 +1163,7 @@ class TaxonomyTest extends BaseTaxonomy
         $taxonomy_store = $this->create_taxonomy_product();
 
         // Attach the taxonomy to the product
-        $product->attachTaxonomy($taxonomy_store['data']->id, 'taxonomy');
+        $product->attachTaxonomy($taxonomy_store['data']->id, 'category');
 
         // Get the taxonomy used in the product
         $used_in = Taxonomy::usedIn($taxonomy_store['data']->id);
