@@ -590,7 +590,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => null,
             'translation' => [
-                'name' => 'A'
+                'en' => [
+                    'name' => 'A'
+                ],
             ],
         ]);
 
@@ -606,7 +608,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyA['data']->id,
             'translation' => [
-                'name' => 'B'
+                'en' => [
+                    'name' => 'B'
+                ],
             ],
         ]);
 
@@ -628,7 +632,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyB['data']->id,
             'translation' => [
-                'name' => 'C'
+                'en' => [
+                    'name' => 'C'
+                ],
             ],
         ]);
 
@@ -656,7 +662,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyC['data']->id,
             'translation' => [
-                'name' => 'D'
+                'en' => [
+                    'name' => 'D'
+                ],
             ],
         ]);
 
@@ -690,7 +698,9 @@ class TaxonomyTest extends BaseTaxonomy
             'type' => 'product_category',
             'parent_id' => $taxonomyA['data']->id,
             'translation' => [
-                'name' => 'E'
+                'en' => [
+                    'name' => 'E'
+                ],
             ],
         ]);
 
@@ -709,7 +719,7 @@ class TaxonomyTest extends BaseTaxonomy
         ]);
 
         /**
-         * delete taxonomy E - use sample map
+         * Delete taxonomy E - use sample map
          *
          * 1  - A
          * 2  - |__ B
@@ -749,7 +759,7 @@ class TaxonomyTest extends BaseTaxonomy
          */
         $product = $this->create_product();
 
-        $product->attachTaxonomy($taxonomyD['data']->id, 'taxonomy');
+        $product->attachTaxonomy($taxonomyD['data']->id, 'category');
 
         /**
          * delete taxonomy C for error used exception - use sample map
@@ -778,7 +788,7 @@ class TaxonomyTest extends BaseTaxonomy
         $product->detachTaxonomy($taxonomyD['data']->id);
 
         /**
-         * delete taxonomy C - use sample map
+         * Delete taxonomy C - use sample map
          *
          * 1  - A
          * 2  - |__ B
@@ -808,7 +818,7 @@ class TaxonomyTest extends BaseTaxonomy
         }
 
         /**
-         * delete taxonomy A - use sample map
+         * Delete taxonomy A - use sample map
          *
          * 1  - A -> delete
          * 2  - |__ B
