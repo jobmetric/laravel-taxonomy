@@ -91,6 +91,10 @@ class StoreTaxonomyRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        if (!empty(request()->all())) {
+            $this->data = request()->all();
+        }
+
         $type = $this->data['type'] ?? null;
 
         // check type
