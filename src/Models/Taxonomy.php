@@ -6,26 +6,25 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use JobMetric\Taxonomy\Events\TaxonomyAllowMemberCollectionEvent;
 use JobMetric\Comment\Contracts\CommentContract;
 use JobMetric\Comment\HasComment;
 use JobMetric\Layout\Contracts\LayoutContract;
 use JobMetric\Layout\HasLayout;
 use JobMetric\Like\HasLike;
 use JobMetric\Media\Contracts\MediaContract;
+use JobMetric\Media\HasDynamicFile;
 use JobMetric\Media\HasFile;
-use JobMetric\Media\MediaableWithType;
 use JobMetric\Membership\Contracts\MemberContract;
 use JobMetric\Membership\HasMember;
 use JobMetric\Metadata\Contracts\MetaContract;
+use JobMetric\Metadata\HasDynamicMeta;
 use JobMetric\Metadata\HasMeta;
-use JobMetric\Metadata\MetaableWithType;
 use JobMetric\PackageCore\Models\HasBooleanStatus;
 use JobMetric\Star\HasStar;
+use JobMetric\Taxonomy\Events\TaxonomyAllowMemberCollectionEvent;
 use JobMetric\Translation\Contracts\TranslationContract;
+use JobMetric\Translation\HasDynamicTranslation;
 use JobMetric\Translation\HasTranslation;
-use JobMetric\Translation\Models\Translation;
-use JobMetric\Translation\TranslatableWithType;
 use JobMetric\Url\HasUrl;
 
 /**
@@ -44,11 +43,11 @@ class Taxonomy extends Model implements TranslationContract, MetaContract, Media
     use HasFactory,
         HasBooleanStatus,
         HasTranslation,
-        TranslatableWithType,
+        HasDynamicTranslation,
         HasMeta,
-        MetaableWithType,
+        HasDynamicMeta,
         HasFile,
-        MediaableWithType,
+        HasDynamicFile,
         HasComment,
         HasMember,
         HasLike,
@@ -76,50 +75,6 @@ class Taxonomy extends Model implements TranslationContract, MetaContract, Media
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::retrieved(function (Taxonomy $taxonomy) {
-            $taxonomy->init();
-        });
-
-        static::creating(function (Taxonomy $taxonomy) {
-            $taxonomy->init();
-        });
-    }
-
-    public function init(): void
-    {
-        $taxonomyTypes = getTaxonomyType();
-
-        foreach ($taxonomyTypes as $type => $taxonomyType) {
-            // Set the translation for the taxonomy type.
-            if (isset($taxonomyType['translation']['fields'])) {
-                $this->setTrans($type, $taxonomyType['translation']['fields']);
-            } else {
-                $this->setTrans($type, []);
-            }
-
-            if (isset($taxonomyType['translation']['seo']) && $taxonomyType['translation']['seo']) {
-                $this->setSeoTransFields($type);
-            }
-
-            // Set the metadata for the taxonomy type.
-            if (isset($taxonomyType['metadata'])) {
-                $this->setMeta($type, $taxonomyType['metadata']);
-            }
-
-            // Set the media collection for the taxonomy type.
-            if (isset($taxonomyType['media'])) {
-                $this->setMediaCollection($type, $taxonomyType['media']);
-            }
-        }
-    }
 
     public function getTable()
     {
