@@ -394,28 +394,28 @@ class Taxonomy
             $data = $validator->validated();
         }
 
-        $taxonomyType = TaxonomyType::type($taxonomy->type);
+        return DB::transaction(function () use ($taxonomy_id, $data, $taxonomy) {
+            $taxonomyType = TaxonomyType::type($taxonomy->type);
 
-        $hierarchical = $taxonomyType->hasHierarchical();
+            $hierarchical = $taxonomyType->hasHierarchical();
 
-        $change_parent_id = false;
-        if (array_key_exists('parent_id', $data) && $taxonomy->parent_id != $data['parent_id'] && $hierarchical) {
-            // If the parent_id is changed, the path of the taxonomy must be updated.
-            // You cannot make a parent a subset of its own child.
-            if (TaxonomyPath::query()->where([
-                'type' => $taxonomy->type,
-                'taxonomy_id' => $data['parent_id'],
-                'path_id' => $taxonomy_id
-            ])->exists()) {
-                throw new CannotMakeParentSubsetOwnChild;
+            $change_parent_id = false;
+            if (array_key_exists('parent_id', $data) && $taxonomy->parent_id != $data['parent_id'] && $hierarchical) {
+                // If the parent_id is changed, the path of the taxonomy must be updated.
+                // You cannot make a parent a subset of its own child.
+                if (TaxonomyPath::query()->where([
+                    'type' => $taxonomy->type,
+                    'taxonomy_id' => $data['parent_id'],
+                    'path_id' => $taxonomy_id
+                ])->exists()) {
+                    throw new CannotMakeParentSubsetOwnChild;
+                }
+
+                $taxonomy->parent_id = $data['parent_id'];
+
+                $change_parent_id = true;
             }
 
-            $taxonomy->parent_id = $data['parent_id'];
-
-            $change_parent_id = true;
-        }
-
-        return DB::transaction(function () use ($taxonomy_id, $data, $taxonomy, $change_parent_id) {
             if (array_key_exists('ordering', $data)) {
                 $taxonomy->ordering = $data['ordering'];
             }
@@ -537,36 +537,29 @@ class Taxonomy
 
         $data = TaxonomyResource::make($taxonomy);
 
-        $taxonomyType = TaxonomyType::type($taxonomy->type);
+        return DB::transaction(function () use ($taxonomy_id, $taxonomy, $data) {
+            $taxonomyType = TaxonomyType::type($taxonomy->type);
 
-        $hierarchical = $taxonomyType->hasHierarchical();
+            $hierarchical = $taxonomyType->hasHierarchical();
 
-        $taxonomy_ids = [];
-        if ($hierarchical) {
-            $taxonomy_ids = TaxonomyPath::query()->where([
-                'type' => $taxonomy->type,
-                'path_id' => $taxonomy_id
-            ])->pluck('taxonomy_id')->toArray();
-
-            $flag_name = false;
-            foreach ($taxonomy_ids as $item) {
-                if ($this->hasUsed($item)) {
-                    $flag_name = $this->getName($item);
-                    break;
-                }
-            }
-
-            if ($flag_name) {
-                throw new TaxonomyUsedException($flag_name);
-            }
-        } else {
-            if ($this->hasUsed($taxonomy_id)) {
-                throw new TaxonomyUsedException($this->getName($taxonomy_id));
-            }
-        }
-
-        return DB::transaction(function () use ($taxonomy_id, $taxonomy, $data, $taxonomy_ids, $hierarchical) {
             if ($hierarchical) {
+                $taxonomy_ids = TaxonomyPath::query()->where([
+                    'type' => $taxonomy->type,
+                    'path_id' => $taxonomy_id
+                ])->pluck('taxonomy_id')->toArray();
+
+                $flag_name = false;
+                foreach ($taxonomy_ids as $item) {
+                    if ($this->hasUsed($item)) {
+                        $flag_name = $this->getName($item);
+                        break;
+                    }
+                }
+
+                if ($flag_name) {
+                    throw new TaxonomyUsedException($flag_name);
+                }
+
                 TaxonomyPath::query()->where('type', $taxonomy->type)->whereIn('taxonomy_id', $taxonomy_ids)->delete();
 
                 TaxonomyModel::query()->whereIn('id', $taxonomy_ids)->get()->each(function ($item) {
@@ -577,6 +570,10 @@ class Taxonomy
                     $item->delete();
                 });
             } else {
+                if ($this->hasUsed($taxonomy_id)) {
+                    throw new TaxonomyUsedException($this->getName($taxonomy_id));
+                }
+
                 $taxonomy->forgetTranslations();
                 $taxonomy->delete();
             }

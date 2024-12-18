@@ -35,7 +35,9 @@ class BaseTaxonomy extends BaseTestCase
             'type' => $type,
             'status' => $status,
             'translation' => [
-                'name' => $name,
+                'en' => [
+                    'name' => $name,
+                ],
             ],
         ]);
 
@@ -78,11 +80,13 @@ class BaseTaxonomy extends BaseTestCase
             'ordering' => 1,
             'status' => true,
             'translation' => [
-                'name' => 'tag name',
-                'description' => 'tag description',
-                'meta_title' => 'tag meta title',
-                'meta_description' => 'tag meta description',
-                'meta_keywords' => 'tag meta keywords',
+                'en' => [
+                    'name' => 'tag name',
+                    'description' => 'tag description',
+                    'meta_title' => 'tag meta title',
+                    'meta_description' => 'tag meta description',
+                    'meta_keywords' => 'tag meta keywords',
+                ]
             ],
         ]);
     }

@@ -35,14 +35,14 @@ class HasTaxonomyTest extends BaseTaxonomy
          * @var Taxonomy $taxonomy_product_tag_3
          */
         $product = $this->create_product();
-        $taxonomy_product_1 = $this->create_taxonomy_for_has('product_taxonomy', 'product 1');
-        $taxonomy_product_2 = $this->create_taxonomy_for_has('product_taxonomy', 'product 2');
+        $taxonomy_product_1 = $this->create_taxonomy_for_has('product_category', 'product 1');
+        $taxonomy_product_2 = $this->create_taxonomy_for_has('product_category', 'product 2');
         $taxonomy_product_tag_1 = $this->create_taxonomy_for_has('product_tag', 'product tag 1');
         $taxonomy_product_tag_2 = $this->create_taxonomy_for_has('product_tag', 'product tag 2');
         $taxonomy_product_tag_3 = $this->create_taxonomy_for_has('product_tag', 'product tag 3', false);
 
         // attach normally single collection
-        $attach_1 = $product->attachTaxonomy($taxonomy_product_1->id, 'taxonomy');
+        $attach_1 = $product->attachTaxonomy($taxonomy_product_1->id, 'category');
 
         $this->assertIsArray($attach_1);
         $this->assertTrue($attach_1['ok']);
@@ -54,10 +54,10 @@ class HasTaxonomyTest extends BaseTaxonomy
             'taxonomy_id' => $taxonomy_product_1->id,
             'taxonomizable_id' => $product->id,
             'taxonomizable_type' => Product::class,
-            'collection' => 'taxonomy'
+            'collection' => 'category'
         ]);
 
-        $attach_2 = $product->attachTaxonomy($taxonomy_product_2->id, 'taxonomy');
+        $attach_2 = $product->attachTaxonomy($taxonomy_product_2->id, 'category');
 
         $this->assertIsArray($attach_2);
         $this->assertTrue($attach_2['ok']);
@@ -69,14 +69,14 @@ class HasTaxonomyTest extends BaseTaxonomy
             'taxonomy_id' => $taxonomy_product_1->id,
             'taxonomizable_id' => $product->id,
             'taxonomizable_type' => Product::class,
-            'collection' => 'taxonomy'
+            'collection' => 'category'
         ]);
 
         $this->assertDatabaseHas(config('taxonomy.tables.taxonomy_relation'), [
             'taxonomy_id' => $taxonomy_product_2->id,
             'taxonomizable_id' => $product->id,
             'taxonomizable_type' => Product::class,
-            'collection' => 'taxonomy'
+            'collection' => 'category'
         ]);
 
         // attach normally multiple collection
@@ -196,10 +196,10 @@ class HasTaxonomyTest extends BaseTaxonomy
          * @var Taxonomy $taxonomy_product
          */
         $product = $this->create_product();
-        $taxonomy_product = $this->create_taxonomy_for_has('product_taxonomy', 'product');
+        $taxonomy_product = $this->create_taxonomy_for_has('product_category', 'product');
 
         // attach taxonomy
-        $product->attachTaxonomy($taxonomy_product->id, 'taxonomy');
+        $product->attachTaxonomy($taxonomy_product->id, 'category');
 
         $detach = $product->detachTaxonomy($taxonomy_product->id);
 
@@ -209,7 +209,7 @@ class HasTaxonomyTest extends BaseTaxonomy
             'taxonomy_id' => $taxonomy_product->id,
             'taxonomizable_id' => $product->id,
             'taxonomizable_type' => Product::class,
-            'collection' => 'taxonomy'
+            'collection' => 'category'
         ]);
     }
 

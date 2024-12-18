@@ -102,7 +102,7 @@ class TaxonomyTest extends BaseTaxonomy
         $this->assertEquals(422, $taxonomyDuplicate['status']);
 
         // store product tag taxonomy
-        /*$taxonomyProductTag = $this->create_taxonomy_product_tag();
+        $taxonomyProductTag = $this->create_taxonomy_product_tag();
 
         $this->assertIsArray($taxonomyProductTag);
         $this->assertTrue($taxonomyProductTag['ok']);
@@ -153,7 +153,7 @@ class TaxonomyTest extends BaseTaxonomy
             'parent_id' => null,
             'ordering' => 1,
             'status' => true,
-        ]);*/
+        ]);
     }
 
     /**
@@ -526,17 +526,17 @@ class TaxonomyTest extends BaseTaxonomy
         ]);
 
         // Store product tag taxonomy
-        /*$taxonomyProductTag = $this->create_taxonomy_product_tag();
+        $taxonomyProductTag = $this->create_taxonomy_product_tag();
 
         // Update product tag taxonomy
         $taxonomyProductTagUpdate = Taxonomy::update($taxonomyProductTag['data']->id, [
             'translation' => [
                 'en' => [
-                    'name' => 'taxonomy name updated',
-                    'description' => 'taxonomy description updated',
-                    'meta_title' => 'taxonomy meta title updated',
-                    'meta_description' => 'taxonomy meta description updated',
-                    'meta_keywords' => 'taxonomy meta keywords updated',
+                    'name' => 'taxonomy tag name updated',
+                    'description' => 'taxonomy tag description updated',
+                    'meta_title' => 'taxonomy tag meta title updated',
+                    'meta_description' => 'taxonomy tag meta description updated',
+                    'meta_keywords' => 'taxonomy tag meta keywords updated',
                 ],
             ],
         ]);
@@ -551,7 +551,7 @@ class TaxonomyTest extends BaseTaxonomy
             'translatable_id' => $taxonomyProductTag['data']->id,
             'locale' => app()->getLocale(),
             'key' => 'name',
-            'value' => 'taxonomy name updated',
+            'value' => 'taxonomy tag name updated',
         ]);
 
         $this->assertDatabaseMissing('translations', [
@@ -560,7 +560,7 @@ class TaxonomyTest extends BaseTaxonomy
             'locale' => app()->getLocale(),
             'key' => 'description',
             'value' => 'taxonomy description updated',
-        ]);*/
+        ]);
     }
 
     /**
@@ -1030,7 +1030,7 @@ class TaxonomyTest extends BaseTaxonomy
          * 2  - B
          * 3  - C
          */
-        /*Taxonomy::store([
+        Taxonomy::store([
             'type' => 'product_tag',
             'translation' => [
                 'en' => [
@@ -1072,7 +1072,7 @@ class TaxonomyTest extends BaseTaxonomy
         $this->assertArrayNotHasKey('name_multiple', $productTags[1]);
 
         $this->assertEquals('C', $productTags[2]->name);
-        $this->assertArrayNotHasKey('name_multiple', $productTags[2]);*/
+        $this->assertArrayNotHasKey('name_multiple', $productTags[2]);
     }
 
     /**
