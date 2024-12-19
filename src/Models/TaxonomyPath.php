@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * JobMetric\Taxonomy\Models\TaxonomyPath
  *
- * @property int type
- * @property int taxonomy_id
- * @property int path_id
- * @property int level
+ * @property int $type
+ * @property int $taxonomy_id
+ * @property int $path_id
+ * @property int $level
  */
 class TaxonomyPath extends Pivot
 {

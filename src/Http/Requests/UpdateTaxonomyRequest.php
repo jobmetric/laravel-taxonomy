@@ -68,7 +68,7 @@ class UpdateTaxonomyRequest extends FormRequest
         $this->renderMultiTranslationFiled($rules, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $taxonomy_id, parent_id: $parent_id, parent_where: ['type' => $type]);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
         $this->renderMediaFiled($rules, $taxonomyType->hasBaseMedia(), $taxonomyType->getMedia());
-        $this->renderUrlFiled($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type);
+        $this->renderUrlFiled($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type, $taxonomy_id);
 
         if (!$taxonomyType->hasHierarchical()) {
             unset($rules['parent_id']);

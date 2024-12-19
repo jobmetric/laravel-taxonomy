@@ -7,15 +7,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Taxonomy\Models\Taxonomy;
 
 /**
- * @property mixed taxonomy_id
- * @property mixed taxonomizable_id
- * @property mixed taxonomizable_type
- * @property mixed collection
- * @property mixed created_at
+ * @property mixed $taxonomy_id
+ * @property mixed $taxonomizable_id
+ * @property mixed $taxonomizable_type
+ * @property mixed $collection
+ * @property mixed $created_at
  *
- * @property Taxonomy taxonomy
- * @property mixed taxonomizable
- * @property mixed taxonomizable_resource
+ * @property Taxonomy $taxonomy
+ * @property mixed $taxonomizable
+ * @property mixed $taxonomizable_resource
  */
 class TaxonomyRelationResource extends JsonResource
 {

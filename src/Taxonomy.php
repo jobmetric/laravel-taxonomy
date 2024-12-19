@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use JobMetric\Metadata\HasFilterMeta;
 use JobMetric\Taxonomy\Events\TaxonomyDeleteEvent;
 use JobMetric\Taxonomy\Events\TaxonomyStoreEvent;
 use JobMetric\Taxonomy\Events\TaxonomyUpdateEvent;
@@ -26,6 +27,8 @@ use Throwable;
 
 class Taxonomy
 {
+    use HasFilterMeta;
+
     /**
      * Get the specified taxonomy.
      *
@@ -109,7 +112,7 @@ class Taxonomy
             });
 
             // filter metadata
-            $this->queryFilterMetadata($query);
+            $this->queryFilterMetadata($query, TaxonomyModel::class, 'c.id');
 
             // Where the type of the taxonomy is equal to the specified type
             $query->where([
@@ -164,7 +167,7 @@ class Taxonomy
             });
 
             // filter metadata
-            $this->queryFilterMetadata($query);
+            $this->queryFilterMetadata($query, TaxonomyModel::class, $taxonomy_table . '.id');
 
             // Where the type of the taxonomy is equal to the specified type
             $query->where('type', $type);
@@ -187,44 +190,6 @@ class Taxonomy
         }
 
         return $queryBuilder;
-    }
-
-    /**
-     * Query filter Metadata
-     *
-     * @param Builder $query
-     */
-    private function queryFilterMetadata(Builder &$query): void
-    {
-        if (request()->filled('metadata')) {
-            $metadata = request()->input('metadata');
-
-            $metadata_table = config('metadata.tables.meta');
-
-            $flagMeta = false;
-            foreach ($metadata as $meta) {
-                if (!is_null($meta) && $meta != '') {
-                    $flagMeta = true;
-                    break;
-                }
-            }
-
-            if ($flagMeta) {
-                $query->join($metadata_table . ' as m', 'm.metaable_id', '=', 'c.id')
-                    ->where('m.metaable_type', '=', TaxonomyModel::class);
-
-                $query->where(function (Builder $q) use ($metadata) {
-                    foreach ($metadata as $meta_key => $meta_value) {
-                        if (!is_null($meta_value) && $meta_value != '') {
-                            $q->where(function () use ($q, $meta_key, $meta_value) {
-                                $q->where('m.key', $meta_key);
-                                $q->where('m.value', $meta_value);
-                            });
-                        }
-                    }
-                });
-            }
-        }
     }
 
     /**
@@ -314,14 +279,14 @@ class Taxonomy
             }
 
             $mediaAllowCollections = $taxonomy->mediaAllowCollections();
-            foreach ($data['media'] ?? [] as $media_key => $media_value) {
-                if ($mediaAllowCollections[$media_key]['multiple'] ?? false) {
+            foreach ($data['media'] ?? [] as $media_collection => $media_value) {
+                if ($mediaAllowCollections[$media_collection]['multiple'] ?? false) {
                     foreach ($media_value as $media_item) {
-                        $taxonomy->attachMedia($media_item, $media_key);
+                        $taxonomy->attachMedia($media_item, $media_collection);
                     }
                 } else {
                     if ($media_value) {
-                        $taxonomy->attachMedia($media_value, $media_key);
+                        $taxonomy->attachMedia($media_value, $media_collection);
                     }
                 }
             }
@@ -425,6 +390,10 @@ class Taxonomy
             }
 
             $taxonomy->save();
+
+            if (array_key_exists('slug', $data)) {
+                $taxonomy->dispatchUrl($data['slug'], $taxonomy->type);
+            }
 
             if (array_key_exists('translation', $data)) {
                 foreach ($data['translation'] ?? [] as $locale => $translation_data) {

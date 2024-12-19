@@ -3,11 +3,11 @@
 namespace JobMetric\Taxonomy;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use JobMetric\Taxonomy\Exceptions\InvalidTaxonomyTypeInCollectionException;
+use JobMetric\Taxonomy\Exceptions\ModelTaxonomyContractNotFoundException;
 use JobMetric\Taxonomy\Exceptions\TaxonomyCollectionNotInTaxonomyAllowTypesException;
 use JobMetric\Taxonomy\Exceptions\TaxonomyIsDisableException;
 use JobMetric\Taxonomy\Exceptions\TaxonomyNotFoundException;
-use JobMetric\Taxonomy\Exceptions\InvalidTaxonomyTypeInCollectionException;
-use JobMetric\Taxonomy\Exceptions\ModelTaxonomyContractNotFoundException;
 use JobMetric\Taxonomy\Http\Resources\TaxonomyResource;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Models\TaxonomyRelation;
@@ -18,10 +18,10 @@ use Throwable;
  *
  * @package JobMetric\Taxonomy
  *
- * @property Taxonomy[] taxonomies
+ * @property Taxonomy[] $taxonomies
  *
  * @method morphToMany(string $class, string $string, string $string1)
- * @method taxonomyAllowTypes()
+ * @method array taxonomyAllowTypes()
  */
 trait HasTaxonomy
 {
@@ -51,7 +51,7 @@ trait HasTaxonomy
     }
 
     /**
-     * attach taxonomy
+     * Attach taxonomy
      *
      * @param int $taxonomy_id
      * @param string $collection
@@ -122,7 +122,7 @@ trait HasTaxonomy
     }
 
     /**
-     * attach taxonomies
+     * Attach taxonomies
      *
      * @param array $taxonomy_ids
      * @param string $collection
@@ -130,7 +130,7 @@ trait HasTaxonomy
      * @return array
      * @throws Throwable
      */
-    public function attachCategories(array $taxonomy_ids, string $collection): array
+    public function attachTaxonomies(array $taxonomy_ids, string $collection): array
     {
         foreach ($taxonomy_ids as $taxonomy_id) {
             $this->attachTaxonomy($taxonomy_id, $collection);
@@ -144,7 +144,7 @@ trait HasTaxonomy
     }
 
     /**
-     * detach taxonomy
+     * Detach taxonomy
      *
      * @param int $taxonomy_id
      *

@@ -7,13 +7,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Taxonomy\Models\Taxonomy;
 
 /**
- * @property string type
- * @property int taxonomy_id
- * @property int path_id
- * @property int level
+ * @property string $type
+ * @property int $taxonomy_id
+ * @property int $path_id
+ * @property int $level
  *
- * @property Taxonomy taxonomy
- * @property Taxonomy path
+ * @property Taxonomy $taxonomy
+ * @property Taxonomy $path
  */
 class TaxonomyPathResource extends JsonResource
 {

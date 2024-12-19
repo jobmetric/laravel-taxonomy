@@ -16,7 +16,8 @@ class TaxonomyExistRule implements ValidationRule
      */
     public function __construct(
         private readonly string|null $type = null
-    ) {
+    )
+    {
     }
 
     /**
@@ -37,9 +38,9 @@ class TaxonomyExistRule implements ValidationRule
         $diff = $value->diff(
             $taxonomies->pluck('id')
         );
-        
+
         //means that we have $values (ids) that aren't exist in taxonomies table
-        if ($diff->isNotEmpty()) { 
+        if ($diff->isNotEmpty()) {
             if ($this->type) {
                 $fail(__('taxonomy::base.validation.taxonomy_exist', ['type' => $this->type]));
             } else {

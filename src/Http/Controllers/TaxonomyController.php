@@ -5,7 +5,14 @@ namespace JobMetric\Taxonomy\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use JobMetric\Language\Facades\Language;
 use JobMetric\Metadata\ServiceType\Metadata as MetadataServiceType;
+use JobMetric\Panelio\Facades\Breadcrumb;
+use JobMetric\Panelio\Facades\Button;
+use JobMetric\Panelio\Facades\Datatable;
+use JobMetric\Panelio\Http\Controllers\Controller;
+use JobMetric\Panelio\Http\Requests\ExportActionListRequest;
+use JobMetric\Panelio\Http\Requests\ImportActionListRequest;
 use JobMetric\Taxonomy\Facades\Taxonomy;
 use JobMetric\Taxonomy\Facades\TaxonomyType;
 use JobMetric\Taxonomy\Http\Requests\SetTranslationRequest;
@@ -13,14 +20,6 @@ use JobMetric\Taxonomy\Http\Requests\StoreTaxonomyRequest;
 use JobMetric\Taxonomy\Http\Requests\UpdateTaxonomyRequest;
 use JobMetric\Taxonomy\Http\Resources\TaxonomyResource;
 use JobMetric\Taxonomy\Models\Taxonomy as TaxonomyModel;
-use JobMetric\Language\Facades\Language;
-use JobMetric\Panelio\Facades\Breadcrumb;
-use JobMetric\Panelio\Facades\Button;
-use JobMetric\Panelio\Facades\Datatable;
-use JobMetric\Panelio\Http\Controllers\Controller;
-use JobMetric\Panelio\Http\Requests\ActionListRequest;
-use JobMetric\Panelio\Http\Requests\ExportActionListRequest;
-use JobMetric\Panelio\Http\Requests\ImportActionListRequest;
 use Throwable;
 
 class TaxonomyController extends Controller
@@ -147,18 +146,26 @@ class TaxonomyController extends Controller
     {
         $data['mode'] = 'create';
 
-        // Set data taxonomy
-        $data['name'] = getTaxonomyTypeArg($type);
+        $serviceType = TaxonomyType::type($type);
+
+        $data['label'] = $serviceType->getLabel();
+        $data['description'] = $serviceType->getDescription();
+        $data['translation'] = $serviceType->getTranslation();
+        $data['media'] = $serviceType->getMedia();
+        $data['metadata'] = $serviceType->getMetadata();
+        $data['hasUrl'] = $serviceType->hasUrl();
+        $data['hasHierarchical'] = $serviceType->hasHierarchical();
+        $data['hasBaseMedia'] = $serviceType->hasBaseMedia();
 
         DomiTitle(trans('taxonomy::base.form.create.title', [
-            'type' => $data['name']
+            'type' => $data['label']
         ]));
 
         // Add breadcrumb
         add_breadcrumb_base($panel, $section);
-        Breadcrumb::add($data['name'], $this->route['index']);
+        Breadcrumb::add($data['label'], $this->route['index']);
         Breadcrumb::add(trans('taxonomy::base.form.create.title', [
-            'type' => $data['name']
+            'type' => $data['label']
         ]));
 
         // add button
@@ -171,13 +178,6 @@ class TaxonomyController extends Controller
 
         $data['type'] = $type;
         $data['action'] = $this->route['store'];
-
-        $data['hierarchical'] = getTaxonomyTypeArg($type, 'hierarchical');
-        $data['translation'] = getTaxonomyTypeArg($type, 'translation');
-        $data['metadata'] = getTaxonomyTypeArg($type, 'metadata');
-        $data['has_url'] = getTaxonomyTypeArg($type, 'has_url');
-        $data['has_base_media'] = getTaxonomyTypeArg($type, 'has_base_media');
-        $data['media'] = getTaxonomyTypeArg($type, 'media');
 
         $data['taxonomies'] = Taxonomy::all($type);
 
@@ -242,19 +242,27 @@ class TaxonomyController extends Controller
 
         $data['mode'] = 'edit';
 
-        // Set data taxonomy
-        $data['name'] = getTaxonomyTypeArg($type);
+        $serviceType = TaxonomyType::type($type);
+
+        $data['label'] = $serviceType->getLabel();
+        $data['description'] = $serviceType->getDescription();
+        $data['translation'] = $serviceType->getTranslation();
+        $data['media'] = $serviceType->getMedia();
+        $data['metadata'] = $serviceType->getMetadata();
+        $data['hasUrl'] = $serviceType->hasUrl();
+        $data['hasHierarchical'] = $serviceType->hasHierarchical();
+        $data['hasBaseMedia'] = $serviceType->hasBaseMedia();
 
         DomiTitle(trans('taxonomy::base.form.edit.title', [
-            'type' => $data['name'],
+            'type' => $data['label'],
             'name' => $taxonomy->id
         ]));
 
         // Add breadcrumb
         add_breadcrumb_base($panel, $section);
-        Breadcrumb::add($data['name'], $this->route['index']);
+        Breadcrumb::add($data['label'], $this->route['index']);
         Breadcrumb::add(trans('taxonomy::base.form.edit.title', [
-            'type' => $data['name'],
+            'type' => $data['label'],
             'name' => $taxonomy->id
         ]));
 
@@ -274,24 +282,14 @@ class TaxonomyController extends Controller
             'jm_taxonomy' => $taxonomy->id
         ]);
 
-        $data['hierarchical'] = getTaxonomyTypeArg($type, 'hierarchical');
-        $data['translation'] = getTaxonomyTypeArg($type, 'translation');
-        $data['metadata'] = getTaxonomyTypeArg($type, 'metadata');
-        $data['has_url'] = getTaxonomyTypeArg($type, 'has_url');
-        $data['has_base_media'] = getTaxonomyTypeArg($type, 'has_base_media');
-        $data['media'] = getTaxonomyTypeArg($type, 'media');
-
+        $data['languages'] = Language::all();
         $data['taxonomies'] = Taxonomy::all($type);
 
-        $data['slug'] = $taxonomy->urlByCollection($type, true);
         $data['taxonomy'] = $taxonomy;
-
+        $data['slug'] = $taxonomy->urlByCollection($type, true);
         $data['translation_edit_values'] = translationResourceData($taxonomy->translations);
         $data['media_values'] = $taxonomy->getMediaDataForObject();
         $data['meta_values'] = $taxonomy->getMetaDataForObject();
-
-        $data['languages'] = Language::all();
-
 
         return view('taxonomy::form', $data);
     }
@@ -354,13 +352,15 @@ class TaxonomyController extends Controller
     {
         $type = $params[2] ?? null;
 
+        $serviceType = TaxonomyType::type($type);
+
         try {
             foreach ($ids as $id) {
                 Taxonomy::delete($id);
             }
 
             $alert = trans_choice('taxonomy::base.messages.deleted_items', count($ids), [
-                'taxonomy' => getTaxonomyTypeArg($type)
+                'taxonomy' => $serviceType->getLabel()
             ]);
 
             return true;
@@ -387,6 +387,8 @@ class TaxonomyController extends Controller
     {
         $type = $params[2] ?? null;
 
+        $serviceType = TaxonomyType::type($type);
+
         try {
             foreach ($ids as $id) {
                 Taxonomy::update($id, ['status' => $value]);
@@ -394,11 +396,11 @@ class TaxonomyController extends Controller
 
             if ($value) {
                 $alert = trans_choice('taxonomy::base.messages.status.enable', count($ids), [
-                    'taxonomy' => getTaxonomyTypeArg($type)
+                    'taxonomy' => $serviceType->getLabel()
                 ]);
             } else {
                 $alert = trans_choice('taxonomy::base.messages.status.disable', count($ids), [
-                    'taxonomy' => getTaxonomyTypeArg($type)
+                    'taxonomy' => $serviceType->getLabel()
                 ]);
             }
 

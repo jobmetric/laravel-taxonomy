@@ -35,6 +35,6 @@ class TaxonomyType extends ServiceType
 
     protected function serviceType(): string
     {
-        return 'taxonomyTypeData';
+        return 'taxonomyType';
     }
 }

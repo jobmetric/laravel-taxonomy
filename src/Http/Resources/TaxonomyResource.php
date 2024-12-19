@@ -6,29 +6,32 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Media\Enums\MediaImageResponsiveModeEnum;
 use JobMetric\Media\Models\Media;
+use JobMetric\Media\ServiceType\Media as MediaServiceType;
 use JobMetric\Metadata\Http\Resources\MetadataResource;
 use JobMetric\Metadata\Models\Meta;
+use JobMetric\Taxonomy\Facades\TaxonomyType;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Models\TaxonomyPath;
 use JobMetric\Taxonomy\Models\TaxonomyRelation;
 use JobMetric\Translation\Models\Translation;
 
 /**
- * @property mixed id
- * @property mixed type
- * @property mixed name
- * @property mixed parent_id
- * @property mixed ordering
- * @property mixed status
- * @property mixed created_at
- * @property mixed updated_at
+ * @property int $id
+ * @property string $type
+ * @property string $name
+ * @property string $name_multiple
+ * @property int $parent_id
+ * @property int $ordering
+ * @property bool $status
+ * @property mixed $created_at
+ * @property mixed $updated_at
  *
- * @property Translation[] translations
- * @property TaxonomyRelation[] taxonomyRelations
- * @property Meta[] metas
- * @property TaxonomyPath[] paths
- * @property Taxonomy[] children
- * @property Media[] files
+ * @property Translation[] $translations
+ * @property TaxonomyRelation[] $taxonomyRelations
+ * @property Meta[] $metas
+ * @property TaxonomyPath[] $paths
+ * @property Taxonomy[] $children
+ * @property Media[] $files
  */
 class TaxonomyResource extends JsonResource
 {
@@ -41,8 +44,9 @@ class TaxonomyResource extends JsonResource
     {
         global $translationLocale;
 
-        $taxonomyTypes = getTaxonomyType();
-        $hierarchical = $taxonomyTypes[$this->type]['hierarchical'];
+        $serviceType = TaxonomyType::type($this->type);
+
+        $hierarchical = $serviceType->hasHierarchical();
 
         return [
             'id' => $this->id,
@@ -74,13 +78,9 @@ class TaxonomyResource extends JsonResource
                 return count($this->children);
             }),
 
-            'files' => $this->whenLoaded('files', function () {
-                $config = [];
-
-                $has_base_media = getTaxonomyTypeArg($this->type, 'has_base_media');
-                $media_config = getTaxonomyTypeArg($this->type, 'media');
-
-                if ($has_base_media) {
+            'files' => $this->whenLoaded('files', function () use ($serviceType) {
+                $config = [];;
+                if ($serviceType->hasBaseMedia()) {
                     $config['base'] = [
                         'default' => [
                             'w' => config('media.default_image_size.width'),
@@ -93,8 +93,11 @@ class TaxonomyResource extends JsonResource
                     ];
                 }
 
-                foreach ($media_config as $collection => $media) {
-                    $config[$collection] = $media['size'];
+                foreach ($serviceType->getMedia() as $item) {
+                    /**
+                     * @var MediaServiceType $item
+                     */
+                    $config[$item->getCollection()] = $item->getSize();
                 }
 
                 $files = [];

@@ -9,25 +9,32 @@
         <input type="hidden" name="type" value="{{ $type }}">
         <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
 
-            @if($has_base_media || !empty($media))
+            @if($hasBaseMedia || !$media->isEmpty())
                 <!--begin::image-->
                 <x-file-manager>
-                    @if ($has_base_media)
+                    @if ($hasBaseMedia)
                         <x-file-single name="{{ trans('taxonomy::base.form.media.base.title') }}" collection="base" mime-types="image" value="{{ old('media.base', isset($media_values['base']) ? implode(',', $media_values['base']) : '') }}" />
                     @endif
 
-                    @foreach($media as $media_collection => $media_item)
-                        @if($media_item['multiple'])
-                            <x-file-multiple name="{{ trans('taxonomy::base.form.media.' . $media_collection . '.title') }}" collection="{{ $media_collection }}" mime-types="{{ implode(',', $media_item['mime_types']) }}" value="{{ implode(',', old('media.' . $media_collection, $media_values[$media_collection] ?? [])) }}" />
-                        @else
-                            <x-file-single name="{{ trans('taxonomy::base.form.media.' . $media_collection . '.title') }}" collection="{{ $media_collection }}" mime-types="{{ implode(',', $media_item['mime_types']) }}" value="{{ old('media.' . $media_collection, isset($media_values[$media_collection]) ? implode(',', $media_values[$media_collection]) : '') }}" />
-                        @endif
+                    @foreach($media as $media_item)
+                        @php
+                            /**
+                             * @var \JobMetric\Media\ServiceType\Media $media_item
+                             */
+                            $media_collection = $media_item->getCollection();
+                            $media_value = $media_item->getMultiple() ?
+                                                implode(',', old('media.' . $media_collection, $media_values[$media_collection] ?? [])) :
+                                                old('media.' . $media_collection, isset($media_values[$media_collection]) ? implode(',', $media_values[$media_collection]) : '');
+                        @endphp
+                        {!!
+                            $media_item->render($media_value, 'taxonomy::base.form.media.{collection}.title')
+                        !!}
                     @endforeach
                 </x-file-manager>
                 <!--end::image-->
             @endif
 
-            @if($has_url)
+            @if($hasUrl)
                 <x-url-slug value="{{ old('slug', $slug ?? null) }}" />
             @endif
 
@@ -56,35 +63,31 @@
                     <div class="d-flex flex-column gap-7 gap-lg-10">
                         @if($mode === 'create')
                             @php
-                            $translation_values = [];
-                            $translation_values['name'] = old('translation.name');
-                            foreach($translation['fields'] ?? [] as $translation_key => $translation_value) {
-                                $translation_values[$translation_key] = old('translation.' . $translation_key);
-                            }
-                            if (isset($translation['seo']) && $translation['seo']) {
-                                $translation_values['meta_title'] = old('translation.meta_title');
-                                $translation_values['meta_description'] = old('translation.meta_description');
-                                $translation_values['meta_keywords'] = old('translation.meta_keywords');
-                            }
+                                $translation_values = [];
+                                foreach($translation as $translation_item) {
+                                    /**
+                                     * @var \JobMetric\Translation\ServiceType\Translation $translation_item
+                                     */
+                                    $translation_uniq_name = $translation_item->customField->params['uniqName'];
+                                    $translation_locale = app()->getLocale();
+                                    $translation_values[$translation_uniq_name] = old("translation.$translation_locale.$translation_uniq_name");
+                                }
                             @endphp
                             <x-translation-card :items="$translation" :values="$translation_values" />
                         @endif
 
                         @if($mode === 'edit')
                             @php
-                            $translation_values = [];
-                            foreach ($languages as $language) {
-                                $translation_values[$language->locale]['name'] = old("translation.$language->locale.name", $translation_edit_values[$language->locale]['name'] ?? null);
-                                foreach($translation['fields'] ?? [] as $translation_key => $translation_value) {
-                                    $translation_values[$language->locale][$translation_key] = old("translation.$language->locale.$translation_key", $translation_edit_values[$language->locale][$translation_key] ?? null);
+                                $translation_values = [];
+                                foreach ($languages as $language) {
+                                    foreach($translation as $translation_item) {
+                                        /**
+                                         * @var \JobMetric\Translation\ServiceType\Translation $translation_item
+                                         */
+                                        $translation_uniq_name = $translation_item->customField->params['uniqName'];
+                                        $translation_values[$language->locale][$translation_uniq_name] = old("translation.$language->locale.$translation_uniq_name", $translation_edit_values[$language->locale][$translation_uniq_name] ?? null);
+                                    }
                                 }
-                                if (isset($translation['seo']) && $translation['seo']) {
-                                    $translation_values[$language->locale]['meta_title'] = old("translation.$language->locale.meta_title", $translation_edit_values[$language->locale]['meta_title'] ?? null);
-                                    $translation_values[$language->locale]['meta_description'] = old("translation.$language->locale.meta_description", $translation_edit_values[$language->locale]['meta_description'] ?? null);
-                                    $translation_values[$language->locale]['meta_keywords'] = old("translation.$language->locale.meta_keywords", $translation_edit_values[$language->locale]['meta_keywords'] ?? null);
-                                }
-                            }
-
                             @endphp
                             <x-translation-card :items="$translation" :values="$translation_values" multiple />
                         @endif
@@ -97,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                @if($hierarchical)
+                                @if($hasHierarchical)
                                     <div class="mb-10">
                                         <label class="form-label">{{ trans('taxonomy::base.form.fields.parent.title') }}</label>
                                         <select name="parent_id" class="form-select" data-control="select2">
@@ -125,8 +128,12 @@
                         @empty(!$metadata)
                             @php
                                 $metadata_values = [];
-                                foreach($metadata as $metadata_key => $metadata_value) {
-                                    $metadata_values[$metadata_key] = old('metadata.' . $metadata_key, $meta_values[$metadata_key] ?? $metadata_value['default'] ?? null);
+                                foreach($metadata as $meta) {
+                                    /**
+                                    * @var \JobMetric\Metadata\ServiceType\Metadata $meta
+                                    */
+                                    $metadata_key = $meta->customField->params['uniqName'];
+                                    $metadata_values[$metadata_key] = old('metadata.' . $metadata_key, $meta_values[$metadata_key] ?? null);
                                 }
                             @endphp
                             <x-metadata-card :items="$metadata" :values="$metadata_values" />

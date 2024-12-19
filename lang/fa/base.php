@@ -17,6 +17,7 @@ return [
         "type_required" => "فیلد نوع الزامی است.",
         "slug_in_type" => "نام مستعار در نوع (:type) قبلا وجود دارد.",
         "taxonomy_exist" => "طبقه بندی در نوع (:type) وجود ندارد.",
+        "taxonomies_exists" => "شناسه های طبقه بندی های زیر وجود ندارند: :ids .",
         "taxonomy_not_found" => "طبقه بندی یافت نشد.",
     ],
 

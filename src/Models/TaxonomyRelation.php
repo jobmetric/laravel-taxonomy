@@ -12,14 +12,14 @@ use JobMetric\Taxonomy\Events\TaxonomizableResourceEvent;
 /**
  * JobMetric\Taxonomy\Models\TaxonomyRelation
  *
- * @property int relatable_type
- * @property int relatable_id
- * @property int taxonomy_id
- * @property int collection
+ * @property int $relatable_type
+ * @property int $relatable_id
+ * @property int $taxonomy_id
+ * @property int $collection
  *
- * @property Taxonomy taxonomy
- * @property mixed taxonomizable
- * @property mixed taxonomizable_resource
+ * @property Taxonomy $taxonomy
+ * @property mixed $taxonomizable
+ * @property mixed $taxonomizable_resource
  */
 class TaxonomyRelation extends Pivot
 {
