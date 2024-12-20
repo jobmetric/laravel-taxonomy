@@ -44,10 +44,6 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
      */
     public function afterRegisterPackage(): void
     {
-        $this->app->singleton('taxonomyType', function () {
-            return [];
-        });
-
         // Register model binding
         Route::model('jm_taxonomy', TaxonomyModel::class);
         Route::model('jm_taxonomy_path', TaxonomyPath::class);
