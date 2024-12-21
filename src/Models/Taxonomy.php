@@ -59,7 +59,8 @@ class Taxonomy extends Model implements TranslationContract, MetaContract, Media
         'parent_id',
         'type',
         'ordering',
-        'status'
+        'status',
+        'translation'
     ];
 
     /**
