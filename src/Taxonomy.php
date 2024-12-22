@@ -260,7 +260,7 @@ class Taxonomy
             $taxonomy->ordering = $data['ordering'] ?? 0;
             $taxonomy->status = $data['status'] ?? true;
 
-            $taxonomy->translations = $data['translation'] ?? [];
+            $taxonomy->translation = $data['translation'] ?? [];
 
             $taxonomy->save();
 
@@ -384,7 +384,7 @@ class Taxonomy
                 $taxonomy->status = $data['status'];
             }
 
-            $taxonomy->translations = $data['translation'] ?? [];
+            $taxonomy->translation = $data['translation'] ?? [];
 
             $taxonomy->save();
 
