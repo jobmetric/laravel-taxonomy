@@ -254,25 +254,20 @@ class Taxonomy
             $taxonomyType = TaxonomyType::type($data['type']);
 
             $hierarchical = $taxonomyType->hasHierarchical();
-
             $taxonomy = new TaxonomyModel;
             $taxonomy->type = $data['type'];
             $taxonomy->parent_id = $data['parent_id'] ?? null;
             $taxonomy->ordering = $data['ordering'] ?? 0;
             $taxonomy->status = $data['status'] ?? true;
+
+            $taxonomy->translations = $data['translation'] ?? [];
+
             $taxonomy->save();
 
             if (isset($data['slug'])) {
                 $taxonomy->dispatchUrl($data['slug'], $data['type']);
             }
 
-            foreach ($data['translation'] as $locale => $translation_data) {
-                foreach ($translation_data as $translation_key => $translation_value) {
-                    $taxonomy->translate($locale, [
-                        $translation_key => $translation_value
-                    ]);
-                }
-            }
 
             foreach ($data['metadata'] ?? [] as $metadata_key => $metadata_value) {
                 $taxonomy->storeMetadata($metadata_key, $metadata_value);
@@ -389,20 +384,12 @@ class Taxonomy
                 $taxonomy->status = $data['status'];
             }
 
+            $taxonomy->translations = $data['translation'] ?? [];
+
             $taxonomy->save();
 
             if (array_key_exists('slug', $data)) {
                 $taxonomy->dispatchUrl($data['slug'], $taxonomy->type);
-            }
-
-            if (array_key_exists('translation', $data)) {
-                foreach ($data['translation'] ?? [] as $locale => $translation_data) {
-                    foreach ($translation_data as $translation_key => $translation_value) {
-                        $taxonomy->translate($locale, [
-                            $translation_key => $translation_value
-                        ]);
-                    }
-                }
             }
 
             if (array_key_exists('metadata', $data)) {
