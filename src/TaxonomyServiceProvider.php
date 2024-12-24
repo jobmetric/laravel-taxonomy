@@ -30,9 +30,9 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
             ->hasConfig()
             ->hasMigration()
             ->hasTranslation()
+            ->hasAsset()
             ->hasRoute()
             ->hasView()
-            ->hasAsset()
             ->registerClass('Taxonomy', Taxonomy::class)
             ->registerClass('TaxonomyType', TaxonomyType::class);
     }
