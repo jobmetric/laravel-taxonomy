@@ -268,7 +268,6 @@ class Taxonomy
                 $taxonomy->dispatchUrl($data['slug'], $data['type']);
             }
 
-
             foreach ($data['metadata'] ?? [] as $metadata_key => $metadata_value) {
                 $taxonomy->storeMetadata($metadata_key, $metadata_value);
             }

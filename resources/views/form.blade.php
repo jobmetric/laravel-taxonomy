@@ -125,7 +125,7 @@
                         </div>
                         <!--end::Information-->
 
-                        @empty(!$metadata)
+                        @if($metadata->isNotEmpty())
                             @php
                                 $metadata_values = [];
                                 foreach($metadata as $meta) {
