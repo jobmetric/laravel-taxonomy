@@ -53,7 +53,7 @@ class TaxonomyTest extends BaseTaxonomy
 
         $this->assertIsArray($taxonomyDuplicate);
         $this->assertFalse($taxonomyDuplicate['ok']);
-        $this->assertEquals($taxonomyDuplicate['message'], trans('taxonomy::base.validation.errors'));
+        $this->assertEquals($taxonomyDuplicate['message'], trans('package-core::base.validation.errors'));
         $this->assertEquals(422, $taxonomyDuplicate['status']);
 
         // store with parent taxonomy
@@ -98,7 +98,7 @@ class TaxonomyTest extends BaseTaxonomy
 
         $this->assertIsArray($taxonomyDuplicate);
         $this->assertFalse($taxonomyDuplicate['ok']);
-        $this->assertEquals($taxonomyDuplicate['message'], trans('taxonomy::base.validation.errors'));
+        $this->assertEquals($taxonomyDuplicate['message'], trans('package-core::base.validation.errors'));
         $this->assertEquals(422, $taxonomyDuplicate['status']);
 
         // store product tag taxonomy
@@ -122,7 +122,7 @@ class TaxonomyTest extends BaseTaxonomy
 
         $this->assertIsArray($taxonomyDuplicate);
         $this->assertFalse($taxonomyDuplicate['ok']);
-        $this->assertEquals($taxonomyDuplicate['message'], trans('taxonomy::base.validation.errors'));
+        $this->assertEquals($taxonomyDuplicate['message'], trans('package-core::base.validation.errors'));
         $this->assertEquals(422, $taxonomyDuplicate['status']);
 
         // store product tag taxonomy with parent taxonomy

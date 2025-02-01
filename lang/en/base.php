@@ -13,7 +13,6 @@ return [
     */
 
     "validation" => [
-        "errors" => "Validation errors occurred.",
         "type_required" => "The type field is required.",
         "slug_in_type" => "The slug already exists in type (:type).",
         "taxonomy_exist" => "The taxonomy does not exist in type (:type).",

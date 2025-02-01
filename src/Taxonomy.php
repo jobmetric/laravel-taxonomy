@@ -242,7 +242,7 @@ class Taxonomy
 
             return [
                 'ok' => false,
-                'message' => trans('taxonomy::base.validation.errors'),
+                'message' => trans('package-core::base.validation.errors'),
                 'errors' => $errors,
                 'status' => 422
             ];
@@ -345,7 +345,7 @@ class Taxonomy
 
             return [
                 'ok' => false,
-                'message' => trans('taxonomy::base.validation.errors'),
+                'message' => trans('package-core::base.validation.errors'),
                 'errors' => $errors,
                 'status' => 422
             ];
