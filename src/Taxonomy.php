@@ -2,10 +2,10 @@
 
 namespace JobMetric\Taxonomy;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use JobMetric\Media\SaveMediaInService;
 use JobMetric\Metadata\HasFilterMeta;
 use JobMetric\Taxonomy\Events\TaxonomyDeleteEvent;
 use JobMetric\Taxonomy\Events\TaxonomyStoreEvent;
@@ -27,7 +27,8 @@ use Throwable;
 
 class Taxonomy
 {
-    use HasFilterMeta;
+    use HasFilterMeta,
+        SaveMediaInService;
 
     /**
      * Get the specified taxonomy.
@@ -272,18 +273,7 @@ class Taxonomy
                 $taxonomy->storeMetadata($metadata_key, $metadata_value);
             }
 
-            $mediaAllowCollections = $taxonomy->mediaAllowCollections();
-            foreach ($data['media'] ?? [] as $media_collection => $media_value) {
-                if ($mediaAllowCollections[$media_collection]['multiple'] ?? false) {
-                    foreach ($media_value as $media_item) {
-                        $taxonomy->attachMedia($media_item, $media_collection);
-                    }
-                } else {
-                    if ($media_value) {
-                        $taxonomy->attachMedia($media_value, $media_collection);
-                    }
-                }
-            }
+            $this->saveMedia($taxonomy, $data['media'] ?? []);
 
             if ($hierarchical) {
                 $level = 0;
@@ -397,19 +387,7 @@ class Taxonomy
                 }
             }
 
-            // @todo: detach all media relations for update
-            $mediaAllowCollections = $taxonomy->mediaAllowCollections();
-            foreach ($data['media'] ?? [] as $media_key => $media_value) {
-                if ($mediaAllowCollections[$media_key]['multiple'] ?? false) {
-                    foreach ($media_value as $media_item) {
-                        $taxonomy->attachMedia($media_item, $media_key);
-                    }
-                } else {
-                    if ($media_value) {
-                        $taxonomy->attachMedia($media_value, $media_key);
-                    }
-                }
-            }
+            $this->saveMedia($taxonomy, $data['media'] ?? []);
 
             if ($change_parent_id) {
                 $paths = TaxonomyPath::query()->where([
