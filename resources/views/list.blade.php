@@ -13,7 +13,7 @@
                 @foreach($metadata as $meta)
                     @php
                         /**
-                         * @var \JobMetric\Metadata\ServiceType\Metadata $meta
+                         * @var \JobMetric\Metadata\Typeify\Metadata $meta
                          */
                     @endphp
                     @if($meta->hasFilter)

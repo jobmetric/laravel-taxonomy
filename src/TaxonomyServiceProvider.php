@@ -3,6 +3,7 @@
 namespace JobMetric\Taxonomy;
 
 use Illuminate\Support\Facades\Route;
+use JobMetric\PackageCore\Enums\RegisterClassTypeEnum;
 use JobMetric\PackageCore\Exceptions\AssetFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\MigrationFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\RegisterClassTypeNotFoundException;
@@ -34,7 +35,7 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
             ->hasRoute()
             ->hasView()
             ->registerClass('Taxonomy', Taxonomy::class)
-            ->registerClass('TaxonomyType', TaxonomyType::class);
+            ->registerClass('TaxonomyType', TaxonomyType::class, RegisterClassTypeEnum::SINGLETON());
     }
 
     /**

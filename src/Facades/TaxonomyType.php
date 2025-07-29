@@ -5,13 +5,14 @@ namespace JobMetric\Taxonomy\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \JobMetric\Taxonomy\TaxonomyType
+ * @mixin \JobMetric\Taxonomy\TaxonomyType
  *
  * @method static \JobMetric\Taxonomy\TaxonomyType define(string $type)
  * @method static \JobMetric\Taxonomy\TaxonomyType type(string $type)
+ * @method static array get()
  * @method static array getTypes()
  * @method static bool hasType(string $type)
- * @method static void checkType(string|null $type)
+ * @method static void ensureTypeExists(string $type)
  */
 class TaxonomyType extends Facade
 {
@@ -22,6 +23,6 @@ class TaxonomyType extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return \JobMetric\Taxonomy\TaxonomyType::class;
+        return 'TaxonomyType';
     }
 }

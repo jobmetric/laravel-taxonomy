@@ -57,7 +57,7 @@ class SetTranslationRequest extends FormRequest
             'translatable_id' => ['required', 'integer', new TaxonomyExistRule($type)],
         ];
 
-        TaxonomyType::checkType($type);
+        TaxonomyType::ensureTypeExists($type);
 
         $taxonomyType = TaxonomyType::type($type);
 

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Media\Enums\MediaImageResponsiveModeEnum;
 use JobMetric\Media\Models\Media;
-use JobMetric\Media\ServiceType\Media as MediaServiceType;
+use JobMetric\Media\Typeify\Media as MediaServiceType;
 use JobMetric\Metadata\Http\Resources\MetadataResource;
 use JobMetric\Metadata\Models\Meta;
 use JobMetric\Taxonomy\Facades\TaxonomyType;

@@ -42,7 +42,7 @@ class Taxonomy
      */
     public function query(string $type, array $filter = [], array $with = []): QueryBuilder
     {
-        TaxonomyType::checkType($type);
+        TaxonomyType::ensureTypeExists($type);
 
         $taxonomyType = TaxonomyType::type($type);
 

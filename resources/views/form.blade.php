@@ -13,13 +13,15 @@
                 <!--begin::image-->
                 <x-file-manager>
                     @if ($hasBaseMedia)
-                        <x-file-single name="{{ trans('taxonomy::base.form.media.base.title') }}" collection="base" mime-types="image" value="{{ old('media.base', isset($media_values['base']) ? implode(',', $media_values['base']) : '') }}" />
+                        <x-file-single name="{{ trans('taxonomy::base.form.media.base.title') }}" collection="base"
+                                       mime-types="image"
+                                       value="{{ old('media.base', isset($media_values['base']) ? implode(',', $media_values['base']) : '') }}"/>
                     @endif
 
                     @foreach($media as $media_item)
                         @php
                             /**
-                             * @var \JobMetric\Media\ServiceType\Media $media_item
+                             * @var \JobMetric\Media\Typeify\Media $media_item
                              */
                             $media_collection = $media_item->getCollection();
                             $media_value = $media_item->getMultiple() ?
@@ -35,25 +37,28 @@
             @endif
 
             @if($hasUrl)
-                <x-url-slug value="{{ old('slug', $slug ?? null) }}" />
+                <x-url-slug value="{{ old('slug', $slug ?? null) }}"/>
             @endif
 
-            <x-boolean-status value="{{ old('status', $taxonomy->status ?? true) }}" />
+            <x-boolean-status value="{{ old('status', $taxonomy->status ?? true) }}"/>
         </div>
 
         <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
             <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2 d-flex justify-content-between align-items-center">
                 <div class="d-flex">
                     <li class="nav-item">
-                        <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#tab_general">{{ trans('package-core::base.tabs.general') }}</a>
+                        <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab"
+                           href="#tab_general">{{ trans('package-core::base.tabs.general') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#tab_option">{{ trans('package-core::base.tabs.options') }}</a>
+                        <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab"
+                           href="#tab_option">{{ trans('package-core::base.tabs.options') }}</a>
                     </li>
                 </div>
                 <div class="d-flex">
                     <li class="nav-item">
-                        <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#tab_layout">{{ trans('package-core::base.tabs.layout') }}</a>
+                        <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab"
+                           href="#tab_layout">{{ trans('package-core::base.tabs.layout') }}</a>
                     </li>
                 </div>
             </ul>
@@ -66,14 +71,14 @@
                                 $translation_values = [];
                                 foreach($translation as $translation_item) {
                                     /**
-                                     * @var \JobMetric\Translation\ServiceType\Translation $translation_item
+                                     * @var \JobMetric\Translation\Typeify\Translation $translation_item
                                      */
                                     $translation_uniq_name = $translation_item->customField->params['uniqName'];
                                     $translation_locale = app()->getLocale();
                                     $translation_values[$translation_uniq_name] = old("translation.$translation_locale.$translation_uniq_name");
                                 }
                             @endphp
-                            <x-translation-card :items="$translation" :values="$translation_values" />
+                            <x-translation-card :items="$translation" :values="$translation_values"/>
                         @endif
 
                         @if($mode === 'edit')
@@ -82,14 +87,14 @@
                                 foreach ($languages as $language) {
                                     foreach($translation as $translation_item) {
                                         /**
-                                         * @var \JobMetric\Translation\ServiceType\Translation $translation_item
+                                         * @var \JobMetric\Translation\Typeify\Translation $translation_item
                                          */
                                         $translation_uniq_name = $translation_item->customField->params['uniqName'];
                                         $translation_values[$language->locale][$translation_uniq_name] = old("translation.$language->locale.$translation_uniq_name", $translation_edit_values[$language->locale][$translation_uniq_name] ?? null);
                                     }
                                 }
                             @endphp
-                            <x-translation-card :items="$translation" :values="$translation_values" multiple />
+                            <x-translation-card :items="$translation" :values="$translation_values" multiple/>
                         @endif
 
                         <!--begin::Information-->
@@ -106,19 +111,22 @@
                                         <select name="parent_id" class="form-select" data-control="select2">
                                             <option value="">{{ trans('package-core::base.select.none') }}</option>
                                             @foreach($taxonomies as $taxonomy_item)
-                                                <option value="{{ $taxonomy_item->id }}" @if(old('parent_id', $taxonomy->parent_id ?? null) == $taxonomy_item->id) selected @endif>{{ $taxonomy_item->name_multiple }}</option>
+                                                <option value="{{ $taxonomy_item->id }}"
+                                                        @if(old('parent_id', $taxonomy->parent_id ?? null) == $taxonomy_item->id) selected @endif>{{ $taxonomy_item->name_multiple }}</option>
                                             @endforeach
                                         </select>
                                         @error('parent_id')
-                                            <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
+                                        <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 @endif
                                 <div class="mb-0">
                                     <label class="form-label">{{ trans('taxonomy::base.form.fields.ordering.title') }}</label>
-                                    <input type="number" name="ordering" class="form-control mb-2" placeholder="{{ trans('taxonomy::base.form.fields.ordering.placeholder') }}" value="{{ old('ordering', $taxonomy->ordering ?? null) }}">
+                                    <input type="number" name="ordering" class="form-control mb-2"
+                                           placeholder="{{ trans('taxonomy::base.form.fields.ordering.placeholder') }}"
+                                           value="{{ old('ordering', $taxonomy->ordering ?? null) }}">
                                     @error('ordering')
-                                        <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
+                                    <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -130,13 +138,13 @@
                                 $metadata_values = [];
                                 foreach($metadata as $meta) {
                                     /**
-                                    * @var \JobMetric\Metadata\ServiceType\Metadata $meta
+                                    * @var \JobMetric\Metadata\Typeify\Metadata $meta
                                     */
                                     $metadata_key = $meta->customField->params['uniqName'];
                                     $metadata_values[$metadata_key] = old('metadata.' . $metadata_key, $meta_values[$metadata_key] ?? null);
                                 }
                             @endphp
-                            <x-metadata-card :items="$metadata" :values="$metadata_values" />
+                            <x-metadata-card :items="$metadata" :values="$metadata_values"/>
                         @endif
                     </div>
                 </div>
@@ -153,7 +161,8 @@
                                 </div>
                             </div>
                             <div class="card-body pt-0">
-                                <select name="template" class="form-select" data-control="select2" data-placeholder="یک آیتم انتخاب کنید">
+                                <select name="template" class="form-select" data-control="select2"
+                                        data-placeholder="یک آیتم انتخاب کنید">
                                     <option value="default" selected="selected">پیش فرض</option>
                                     <option value="taraneh">ترانه</option>
                                 </select>

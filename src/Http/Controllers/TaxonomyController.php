@@ -6,7 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use JobMetric\Language\Facades\Language;
-use JobMetric\Metadata\ServiceType\Metadata as MetadataServiceType;
+use JobMetric\Metadata\Typeify\Metadata as MetadataServiceType;
 use JobMetric\Panelio\Facades\Breadcrumb;
 use JobMetric\Panelio\Facades\Button;
 use JobMetric\Panelio\Facades\Datatable;
@@ -74,8 +74,8 @@ class TaxonomyController extends Controller
         $data['hasShowDescriptionInList'] = $serviceType->hasShowDescriptionInList();
         $data['hasRemoveFilterInList'] = $serviceType->hasRemoveFilterInList();
         $hasChangeStatusInList = $serviceType->hasChangeStatusInList();
-        $hasImportInList = $serviceType->hasImportInList();
-        $hasExportInList = $serviceType->hasExportInList();
+        $hasImport = $serviceType->hasImport();
+        $hasExport = $serviceType->hasExport();
 
         DomiTitle($data['label']);
 
@@ -93,12 +93,12 @@ class TaxonomyController extends Controller
         }
 
         // Check show button import
-        if ($hasImportInList) {
+        if ($hasImport) {
             Button::import();
         }
 
         // Check show button export
-        if ($hasExportInList) {
+        if ($hasExport) {
             Button::export();
         }
 

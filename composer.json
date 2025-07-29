@@ -33,6 +33,7 @@
         "jobmetric/media": "^1.14",
         "jobmetric/domi": "^1.13",
         "jobmetric/panelio": "^1.15.2",
+        "jobmetric/typeify": "^1.1",
         "spatie/laravel-query-builder": "^6.3"
     },
     "autoload": {

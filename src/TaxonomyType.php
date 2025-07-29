@@ -3,38 +3,30 @@
 namespace JobMetric\Taxonomy;
 
 use Illuminate\Support\Traits\Macroable;
-use JobMetric\Media\MediaServiceType;
-use JobMetric\Metadata\MetadataServiceType;
-use JobMetric\PackageCore\Services\BaseServiceType;
-use JobMetric\PackageCore\Services\HierarchicalServiceType;
-use JobMetric\PackageCore\Services\InformationServiceType;
-use JobMetric\PackageCore\Services\ListChangeStatusServiceType;
-use JobMetric\PackageCore\Services\ListExportServiceType;
-use JobMetric\PackageCore\Services\ListFilterServiceType;
-use JobMetric\PackageCore\Services\ListImportServiceType;
-use JobMetric\PackageCore\Services\ListShowDescriptionServiceType;
-use JobMetric\PackageCore\Services\ServiceType;
-use JobMetric\Translation\TranslationServiceType;
-use JobMetric\Url\UrlServiceType;
+use JobMetric\Media\Typeify\HasMediaType;
+use JobMetric\Metadata\Typeify\HasMetadataType;
+use JobMetric\Translation\Typeify\HasTranslationType;
+use JobMetric\Typeify\BaseType;
+use JobMetric\Typeify\Traits\HasHierarchicalType;
+use JobMetric\Typeify\Traits\HasListOptionType;
+use JobMetric\Typeify\Traits\HasImportType;
+use JobMetric\Typeify\Traits\HasExportType;
+use JobMetric\Url\Typeify\HasUrlType;
 
-class TaxonomyType extends ServiceType
+class TaxonomyType extends BaseType
 {
     use Macroable,
-        BaseServiceType,
-        InformationServiceType,
-        TranslationServiceType,
-        MetadataServiceType,
-        MediaServiceType,
-        HierarchicalServiceType,
-        UrlServiceType,
-        ListShowDescriptionServiceType,
-        ListFilterServiceType,
-        ListChangeStatusServiceType,
-        ListImportServiceType,
-        ListExportServiceType;
+        HasHierarchicalType,
+        HasTranslationType,
+        HasMetadataType,
+        HasMediaType,
+        HasUrlType,
+        HasListOptionType,
+        HasImportType,
+        HasExportType;
 
-    protected function serviceType(): string
+    protected function typeName(): string
     {
-        return 'TaxonomyServiceType';
+        return 'taxonomy-type';
     }
 }

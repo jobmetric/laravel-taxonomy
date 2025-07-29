@@ -5,7 +5,7 @@ namespace JobMetric\Taxonomy\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use JobMetric\Media\Http\Requests\MediaTypeObjectRequest;
-use JobMetric\Media\ServiceType\Media;
+use JobMetric\Media\Typeify\Media;
 use JobMetric\Metadata\Http\Requests\MetadataTypeObjectRequest;
 use JobMetric\Taxonomy\Facades\TaxonomyType;
 use JobMetric\Taxonomy\Models\Taxonomy;
@@ -55,7 +55,7 @@ class StoreTaxonomyRequest extends FormRequest
         ];
 
         // check type
-        TaxonomyType::checkType($type);
+        TaxonomyType::ensureTypeExists($type);
 
         $taxonomyType = TaxonomyType::type($type);
 
@@ -98,7 +98,7 @@ class StoreTaxonomyRequest extends FormRequest
         $type = $this->data['type'] ?? null;
 
         // check type
-        TaxonomyType::checkType($type);
+        TaxonomyType::ensureTypeExists($type);
 
         $taxonomyType = TaxonomyType::type($type);
 
@@ -124,7 +124,7 @@ class StoreTaxonomyRequest extends FormRequest
         $type = $this->data['type'] ?? null;
 
         // check type
-        TaxonomyType::checkType($type);
+        TaxonomyType::ensureTypeExists($type);
 
         $taxonomyType = TaxonomyType::type($type);
 
