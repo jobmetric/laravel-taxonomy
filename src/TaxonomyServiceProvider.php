@@ -4,10 +4,8 @@ namespace JobMetric\Taxonomy;
 
 use Illuminate\Support\Facades\Route;
 use JobMetric\PackageCore\Enums\RegisterClassTypeEnum;
-use JobMetric\PackageCore\Exceptions\AssetFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\MigrationFolderNotFoundException;
 use JobMetric\PackageCore\Exceptions\RegisterClassTypeNotFoundException;
-use JobMetric\PackageCore\Exceptions\ViewFolderNotFoundException;
 use JobMetric\PackageCore\PackageCore;
 use JobMetric\PackageCore\PackageCoreServiceProvider;
 use JobMetric\Taxonomy\Models\Taxonomy as TaxonomyModel;
@@ -24,8 +22,6 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
      * @return void
      * @throws MigrationFolderNotFoundException
      * @throws RegisterClassTypeNotFoundException
-     * @throws ViewFolderNotFoundException
-     * @throws AssetFolderNotFoundException
      */
     public function configuration(PackageCore $package): void
     {
@@ -33,9 +29,6 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
             ->hasConfig()
             ->hasMigration()
             ->hasTranslation()
-            ->hasAsset()
-            ->hasRoute()
-            ->hasView()
             ->registerClass('Taxonomy', Taxonomy::class)
             ->registerClass('TaxonomyTypeRegistry', TaxonomyTypeRegistry::class, RegisterClassTypeEnum::SINGLETON());
     }
