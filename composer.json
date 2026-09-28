@@ -28,7 +28,7 @@
         "jobmetric/laravel-membership": "^1.2",
         "jobmetric/laravel-like": "^1.4",
         "jobmetric/laravel-star": "^1.1",
-        "jobmetric/laravel-layout": "^1.1",
+        "jobmetric/laravel-layout": "^2.0",
         "jobmetric/laravel-url": "^3.0",
         "jobmetric/media": "^2.0",
         "spatie/laravel-query-builder": "^6.3"
