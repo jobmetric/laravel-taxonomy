@@ -16,13 +16,11 @@ use JobMetric\Media\HasDynamicFile;
 use JobMetric\Media\HasFile;
 use JobMetric\Membership\Contracts\MemberContract;
 use JobMetric\Membership\HasMember;
-use JobMetric\Metadata\Contracts\MetaContract;
 use JobMetric\Metadata\HasDynamicMeta;
 use JobMetric\Metadata\HasMeta;
 use JobMetric\PackageCore\Models\HasBooleanStatus;
 use JobMetric\Star\HasStar;
 use JobMetric\Taxonomy\Events\TaxonomyAllowMemberCollectionEvent;
-use JobMetric\Translation\Contracts\TranslationContract;
 use JobMetric\Translation\HasDynamicTranslation;
 use JobMetric\Translation\HasTranslation;
 use JobMetric\Url\HasUrl;
@@ -38,7 +36,7 @@ use JobMetric\Url\HasUrl;
  *
  * @method static find(int $int)
  */
-class Taxonomy extends Model implements TranslationContract, MetaContract, MediaContract, CommentContract, MemberContract, LayoutContract
+class Taxonomy extends Model implements MediaContract, CommentContract, MemberContract, LayoutContract
 {
     use HasFactory,
         HasBooleanStatus,
@@ -50,7 +48,7 @@ class Taxonomy extends Model implements TranslationContract, MetaContract, Media
         HasDynamicFile,
         HasComment,
         HasMember,
-        HasLike,
+        //HasLike,
         HasStar,
         HasLayout,
         HasUrl;

@@ -6,7 +6,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use JobMetric\Media\Http\Requests\MediaTypeObjectRequest;
 use JobMetric\Media\Typeify\Media;
-use JobMetric\Metadata\Http\Requests\MetadataTypeObjectRequest;
 use JobMetric\Taxonomy\Facades\TaxonomyType;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Rules\TaxonomyExistRule;
@@ -16,7 +15,7 @@ use Throwable;
 
 class StoreTaxonomyRequest extends FormRequest
 {
-    use TranslationTypeObjectRequest, MetadataTypeObjectRequest, MediaTypeObjectRequest, UrlTypeObjectRequest;
+    use TranslationTypeObjectRequest, \Panelify\Metadata\Http\Requests\MetadataTypeObjectRequest, MediaTypeObjectRequest, UrlTypeObjectRequest;
 
     public array $data = [];
 
@@ -62,7 +61,7 @@ class StoreTaxonomyRequest extends FormRequest
         $this->renderTranslationFiled($rules, $this->data, $taxonomyType->getTranslation(), Taxonomy::class, parent_id: $parent_id, parent_where: ['type' => $type]);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
         $this->renderMediaFiled($rules, $taxonomyType->hasBaseMedia(), $taxonomyType->getMedia());
-        $this->renderUrlFiled($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type);
+        $this->renderUrlField($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type);
 
         if (!$taxonomyType->hasHierarchical()) {
             unset($rules['parent_id']);
