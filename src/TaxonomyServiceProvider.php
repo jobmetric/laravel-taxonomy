@@ -13,6 +13,8 @@ use JobMetric\PackageCore\PackageCoreServiceProvider;
 use JobMetric\Taxonomy\Models\Taxonomy as TaxonomyModel;
 use JobMetric\Taxonomy\Models\TaxonomyPath;
 use JobMetric\Taxonomy\Models\TaxonomyRelation;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry as FacadeTaxonomyTypeRegistry;
+use JobMetric\Taxonomy\Support\TaxonomyTypeRegistry;
 
 class TaxonomyServiceProvider extends PackageCoreServiceProvider
 {
@@ -35,7 +37,7 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
             ->hasRoute()
             ->hasView()
             ->registerClass('Taxonomy', Taxonomy::class)
-            ->registerClass('TaxonomyType', TaxonomyType::class, RegisterClassTypeEnum::SINGLETON());
+            ->registerClass('TaxonomyTypeRegistry', TaxonomyTypeRegistry::class, RegisterClassTypeEnum::SINGLETON());
     }
 
     /**
@@ -45,6 +47,10 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
      */
     public function afterRegisterPackage(): void
     {
+        foreach (config('taxonomy.types', []) as $type => $options) {
+            FacadeTaxonomyTypeRegistry::register($type, is_array($options) ? $options : []);
+        }
+
         // Register model binding
         Route::model('jm_taxonomy', TaxonomyModel::class);
         Route::model('jm_taxonomy_path', TaxonomyPath::class);

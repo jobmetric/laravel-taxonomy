@@ -5,8 +5,8 @@ namespace JobMetric\Taxonomy\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use JobMetric\Media\Http\Requests\MediaTypeObjectRequest;
-use JobMetric\Media\Typeify\Media;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Media\Support\Media;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Rules\TaxonomyExistRule;
 use JobMetric\Translation\Http\Requests\MultiTranslationTypeObjectRequest;
@@ -61,9 +61,9 @@ class UpdateTaxonomyRequest extends FormRequest
         ];
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $this->renderMultiTranslationFiled($rules, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $taxonomy_id, parent_id: $parent_id, parent_where: ['type' => $type]);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
@@ -130,9 +130,9 @@ class UpdateTaxonomyRequest extends FormRequest
         $type = $this->type ?? $this->data['type'] ?? null;
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         if (!$taxonomyType->hasHierarchical()) {
             $this->merge([
@@ -161,9 +161,9 @@ class UpdateTaxonomyRequest extends FormRequest
         ];
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $this->renderMultiTranslationAttribute($params, $taxonomyType->getTranslation());
         $this->renderMetadataAttribute($params, $taxonomyType->getMetadata());

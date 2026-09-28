@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JobMetric\Media\Enums\MediaImageResponsiveModeEnum;
 use JobMetric\Media\Models\Media;
-use JobMetric\Media\Typeify\Media as MediaServiceType;
+use JobMetric\Media\Support\Media as MediaServiceType;
 use JobMetric\Metadata\Http\Resources\MetadataResource;
 use JobMetric\Metadata\Models\Meta;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Models\TaxonomyPath;
 use JobMetric\Taxonomy\Models\TaxonomyRelation;
@@ -44,7 +44,7 @@ class TaxonomyResource extends JsonResource
     {
         global $translationLocale;
 
-        $serviceType = TaxonomyType::type($this->type);
+        $serviceType = TaxonomyTypeRegistry::for($this->type);
 
         $hierarchical = $serviceType->hasHierarchical();
 

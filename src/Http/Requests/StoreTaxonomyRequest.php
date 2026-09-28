@@ -5,8 +5,8 @@ namespace JobMetric\Taxonomy\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use JobMetric\Media\Http\Requests\MediaTypeObjectRequest;
-use JobMetric\Media\Typeify\Media;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Media\Support\Media;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Rules\TaxonomyExistRule;
 use JobMetric\Translation\Http\Requests\TranslationTypeObjectRequest;
@@ -43,7 +43,7 @@ class StoreTaxonomyRequest extends FormRequest
         $parent_id = $this->data['parent_id'] ?? -1;
 
         $rules = [
-            'type' => 'required|string|in:' . implode(',', TaxonomyType::getTypes()),
+            'type' => 'required|string|in:' . implode(',', TaxonomyTypeRegistry::values()),
             'parent_id' => [
                 'nullable',
                 'integer',
@@ -54,9 +54,9 @@ class StoreTaxonomyRequest extends FormRequest
         ];
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $this->renderTranslationFiled($rules, $this->data, $taxonomyType->getTranslation(), Taxonomy::class, parent_id: $parent_id, parent_where: ['type' => $type]);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
@@ -97,9 +97,9 @@ class StoreTaxonomyRequest extends FormRequest
         $type = $this->data['type'] ?? null;
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         if (!$taxonomyType->hasHierarchical()) {
             $this->merge([
@@ -123,9 +123,9 @@ class StoreTaxonomyRequest extends FormRequest
         $type = $this->data['type'] ?? null;
 
         // check type
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $params = [
             'parent_id' => trans('taxonomy::base.form.fields.parent.title'),

@@ -13,7 +13,7 @@ use JobMetric\Taxonomy\Events\TaxonomyUpdateEvent;
 use JobMetric\Taxonomy\Exceptions\CannotMakeParentSubsetOwnChild;
 use JobMetric\Taxonomy\Exceptions\TaxonomyNotFoundException;
 use JobMetric\Taxonomy\Exceptions\TaxonomyUsedException;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Http\Requests\StoreTaxonomyRequest;
 use JobMetric\Taxonomy\Http\Requests\UpdateTaxonomyRequest;
 use JobMetric\Taxonomy\Http\Resources\TaxonomyRelationResource;
@@ -42,9 +42,9 @@ class Taxonomy
      */
     public function query(string $type, array $filter = [], array $with = []): QueryBuilder
     {
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $hierarchical = $taxonomyType->hasHierarchical();
 
@@ -252,7 +252,7 @@ class Taxonomy
         }
 
         return DB::transaction(function () use ($data) {
-            $taxonomyType = TaxonomyType::type($data['type']);
+            $taxonomyType = TaxonomyTypeRegistry::for($data['type']);
 
             $hierarchical = $taxonomyType->hasHierarchical();
             $taxonomy = new TaxonomyModel;
@@ -344,7 +344,7 @@ class Taxonomy
         }
 
         return DB::transaction(function () use ($taxonomy_id, $data, $taxonomy) {
-            $taxonomyType = TaxonomyType::type($taxonomy->type);
+            $taxonomyType = TaxonomyTypeRegistry::for($taxonomy->type);
 
             $hierarchical = $taxonomyType->hasHierarchical();
 
@@ -471,7 +471,7 @@ class Taxonomy
         $data = TaxonomyResource::make($taxonomy);
 
         return DB::transaction(function () use ($taxonomy_id, $taxonomy, $data) {
-            $taxonomyType = TaxonomyType::type($taxonomy->type);
+            $taxonomyType = TaxonomyTypeRegistry::for($taxonomy->type);
 
             $hierarchical = $taxonomyType->hasHierarchical();
 
@@ -545,7 +545,7 @@ class Taxonomy
 
         $locale = $locale ?? app()->getLocale();
 
-        $taxonomyType = TaxonomyType::type($taxonomy->type);
+        $taxonomyType = TaxonomyTypeRegistry::for($taxonomy->type);
 
         $hierarchical = $taxonomyType->hasHierarchical();
 

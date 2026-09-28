@@ -21,7 +21,7 @@
                     @foreach($media as $media_item)
                         @php
                             /**
-                             * @var \JobMetric\Media\Typeify\Media $media_item
+                             * @var \JobMetric\Media\Support\Media $media_item
                              */
                             $media_collection = $media_item->getCollection();
                             $media_value = $media_item->getMultiple() ?
@@ -71,7 +71,7 @@
                                 $translation_values = [];
                                 foreach($translation as $translation_item) {
                                     /**
-                                     * @var \JobMetric\Translation\Typeify\Translation $translation_item
+                                     * @var \JobMetric\Translation\Support\Translation $translation_item
                                      */
                                     $translation_uniq_name = $translation_item->customField->params['uniqName'];
                                     $translation_locale = app()->getLocale();
@@ -87,7 +87,7 @@
                                 foreach ($languages as $language) {
                                     foreach($translation as $translation_item) {
                                         /**
-                                         * @var \JobMetric\Translation\Typeify\Translation $translation_item
+                                         * @var \JobMetric\Translation\Support\Translation $translation_item
                                          */
                                         $translation_uniq_name = $translation_item->customField->params['uniqName'];
                                         $translation_values[$language->locale][$translation_uniq_name] = old("translation.$language->locale.$translation_uniq_name", $translation_edit_values[$language->locale][$translation_uniq_name] ?? null);
@@ -138,7 +138,7 @@
                                 $metadata_values = [];
                                 foreach($metadata as $meta) {
                                     /**
-                                    * @var \JobMetric\Metadata\Typeify\Metadata $meta
+                                    * @var \JobMetric\Metadata\Support\Metadata $meta
                                     */
                                     $metadata_key = $meta->customField->params['uniqName'];
                                     $metadata_values[$metadata_key] = old('metadata.' . $metadata_key, $meta_values[$metadata_key] ?? null);

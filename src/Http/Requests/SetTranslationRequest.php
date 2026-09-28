@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use InvalidArgumentException;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Rules\TaxonomyExistRule;
 use JobMetric\Translation\Http\Requests\TranslationTypeObjectRequest;
@@ -57,9 +57,9 @@ class SetTranslationRequest extends FormRequest
             'translatable_id' => ['required', 'integer', new TaxonomyExistRule($type)],
         ];
 
-        TaxonomyType::ensureTypeExists($type);
+        TaxonomyTypeRegistry::ensureExists($type);
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $this->renderTranslationFiled($rules, $form_data, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $id, parent_id: $taxonomy->parent_id, parent_where: ['type' => $type]);
 
@@ -76,7 +76,7 @@ class SetTranslationRequest extends FormRequest
         $form_data = request()->all();
         $type = $this->route()->parameters()['type'];
 
-        $taxonomyType = TaxonomyType::type($type);
+        $taxonomyType = TaxonomyTypeRegistry::for($type);
 
         $params = [];
         $this->renderTranslationAttribute($params, $form_data, $taxonomyType->getTranslation());

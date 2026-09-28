@@ -6,7 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use JobMetric\Language\Facades\Language;
-use JobMetric\Metadata\Typeify\Metadata as MetadataServiceType;
+use JobMetric\Metadata\Support\Metadata as MetadataServiceType;
 use JobMetric\Panelio\Facades\Breadcrumb;
 use JobMetric\Panelio\Facades\Button;
 use JobMetric\Panelio\Facades\Datatable;
@@ -14,7 +14,7 @@ use JobMetric\Panelio\Http\Controllers\Controller;
 use JobMetric\Panelio\Http\Requests\ExportActionListRequest;
 use JobMetric\Panelio\Http\Requests\ImportActionListRequest;
 use JobMetric\Taxonomy\Facades\Taxonomy;
-use JobMetric\Taxonomy\Facades\TaxonomyType;
+use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Http\Requests\SetTranslationRequest;
 use JobMetric\Taxonomy\Http\Requests\StoreTaxonomyRequest;
 use JobMetric\Taxonomy\Http\Requests\UpdateTaxonomyRequest;
@@ -61,7 +61,7 @@ class TaxonomyController extends Controller
             return Datatable::of($query, resource_class: TaxonomyResource::class);
         }
 
-        $serviceType = TaxonomyType::type($type);
+        $serviceType = TaxonomyTypeRegistry::for($type);
 
         $data['label'] = $serviceType->getLabel();
         $data['description'] = $serviceType->getDescription();
@@ -146,7 +146,7 @@ class TaxonomyController extends Controller
     {
         $data['mode'] = 'create';
 
-        $serviceType = TaxonomyType::type($type);
+        $serviceType = TaxonomyTypeRegistry::for($type);
 
         $data['label'] = $serviceType->getLabel();
         $data['description'] = $serviceType->getDescription();
@@ -242,7 +242,7 @@ class TaxonomyController extends Controller
 
         $data['mode'] = 'edit';
 
-        $serviceType = TaxonomyType::type($type);
+        $serviceType = TaxonomyTypeRegistry::for($type);
 
         $data['label'] = $serviceType->getLabel();
         $data['description'] = $serviceType->getDescription();
@@ -352,7 +352,7 @@ class TaxonomyController extends Controller
     {
         $type = $params[2] ?? null;
 
-        $serviceType = TaxonomyType::type($type);
+        $serviceType = TaxonomyTypeRegistry::for($type);
 
         try {
             foreach ($ids as $id) {
@@ -387,7 +387,7 @@ class TaxonomyController extends Controller
     {
         $type = $params[2] ?? null;
 
-        $serviceType = TaxonomyType::type($type);
+        $serviceType = TaxonomyTypeRegistry::for($type);
 
         try {
             foreach ($ids as $id) {
