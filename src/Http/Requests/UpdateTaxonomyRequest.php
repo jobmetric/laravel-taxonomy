@@ -6,12 +6,12 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use JobMetric\Media\Http\Requests\MediaTypeObjectRequest;
 use JobMetric\Media\Support\Media;
+use JobMetric\Metadata\Http\Requests\MetadataTypeObjectRequest;
 use JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry;
 use JobMetric\Taxonomy\Models\Taxonomy;
 use JobMetric\Taxonomy\Rules\TaxonomyExistRule;
 use JobMetric\Translation\Http\Requests\MultiTranslationTypeObjectRequest;
 use JobMetric\Url\Http\Requests\UrlTypeObjectRequest;
-use Panelify\Metadata\Http\Requests\MetadataTypeObjectRequest;
 
 class UpdateTaxonomyRequest extends FormRequest
 {
