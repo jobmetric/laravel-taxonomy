@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use JobMetric\Comment\Contracts\CommentContract;
 use JobMetric\Comment\HasComment;
-use JobMetric\Layout\Contracts\LayoutContract;
 use JobMetric\Layout\HasLayout;
 use JobMetric\Like\HasLike;
 use JobMetric\Media\Contracts\MediaContract;
@@ -36,7 +35,7 @@ use JobMetric\Url\HasUrl;
  *
  * @method static find(int $int)
  */
-class Taxonomy extends Model implements MediaContract, CommentContract, MemberContract, LayoutContract
+class Taxonomy extends Model implements MediaContract, CommentContract, MemberContract
 {
     use HasFactory,
         HasBooleanStatus,
