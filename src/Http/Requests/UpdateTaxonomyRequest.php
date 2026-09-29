@@ -36,7 +36,7 @@ class UpdateTaxonomyRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (!empty(request()->all())) {
+        if (empty($this->data) && !empty(request()->all())) {
             $this->data = request()->all();
         }
 
@@ -123,7 +123,7 @@ class UpdateTaxonomyRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if (!empty(request()->all())) {
+        if (empty($this->data) && !empty(request()->all())) {
             $this->data = request()->all();
         }
 
@@ -148,7 +148,7 @@ class UpdateTaxonomyRequest extends FormRequest
      */
     public function attributes(): array
     {
-        if (!empty(request()->all())) {
+        if (empty($this->data) && !empty(request()->all())) {
             $this->data = request()->all();
         }
 
