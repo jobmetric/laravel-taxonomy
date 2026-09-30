@@ -20,6 +20,7 @@ use JobMetric\Metadata\HasMeta;
 use JobMetric\PackageCore\Models\HasBooleanStatus;
 use JobMetric\Star\HasStar;
 use JobMetric\Taxonomy\Events\TaxonomyAllowMemberCollectionEvent;
+use JobMetric\Taxonomy\Support\TaxonomyTypeRegistry;
 use JobMetric\Translation\HasDynamicTranslation;
 use JobMetric\Translation\HasTranslation;
 use JobMetric\Url\HasUrl;
@@ -73,6 +74,16 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    /**
+     * Get the type registry used by dynamic capabilities.
+     *
+     * @return TaxonomyTypeRegistry
+     */
+    public static function typeRegistry(): TaxonomyTypeRegistry
+    {
+        return app(TaxonomyTypeRegistry::class);
+    }
 
     public function getTable()
     {
