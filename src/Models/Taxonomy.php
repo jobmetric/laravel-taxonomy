@@ -5,6 +5,7 @@ namespace JobMetric\Taxonomy\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use JobMetric\Comment\Contracts\CommentContract;
 use JobMetric\Comment\HasComment;
@@ -23,6 +24,7 @@ use JobMetric\Taxonomy\Events\TaxonomyAllowMemberCollectionEvent;
 use JobMetric\Taxonomy\Support\TaxonomyTypeRegistry;
 use JobMetric\Translation\HasDynamicTranslation;
 use JobMetric\Translation\HasTranslation;
+use JobMetric\Url\Contracts\UrlContract;
 use JobMetric\Url\HasUrl;
 
 /**
@@ -36,7 +38,7 @@ use JobMetric\Url\HasUrl;
  *
  * @method static find(int $int)
  */
-class Taxonomy extends Model implements MediaContract, CommentContract, MemberContract
+class Taxonomy extends Model implements MediaContract, CommentContract, MemberContract, UrlContract
 {
     use HasFactory,
         HasBooleanStatus,
@@ -157,6 +159,16 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
     }
 
     /**
+     * Get the parent taxonomy.
+     *
+     * @return BelongsTo
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    /**
      * Get the children taxonomy.
      *
      * @return HasMany
@@ -164,6 +176,31 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /**
+     * Get the canonical URL built from ancestor slugs.
+     *
+     * @return string
+     */
+    public function getFullUrl(): string
+    {
+        $segments = [];
+        $taxonomy = $this;
+
+        while ($taxonomy instanceof self) {
+            $slug = (string) $taxonomy->slug;
+
+            if ($slug !== '') {
+                array_unshift($segments, $slug);
+            }
+
+            $taxonomy = $taxonomy->relationLoaded('parent')
+                ? $taxonomy->getRelation('parent')
+                : $taxonomy->parent;
+        }
+
+        return implode('/', $segments);
     }
 
     /**
