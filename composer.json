@@ -29,7 +29,7 @@
         "jobmetric/laravel-like": "^1.4",
         "jobmetric/laravel-star": "^1.1",
         "jobmetric/laravel-layout": "^2.0",
-        "jobmetric/laravel-url": "^3.0",
+        "jobmetric/laravel-url": "^3.0.1",
         "jobmetric/media": "^2.0.2",
         "spatie/laravel-query-builder": "^6.3"
     },
