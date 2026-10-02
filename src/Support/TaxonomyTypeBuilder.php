@@ -28,6 +28,10 @@ class TaxonomyTypeBuilder
     public function apply(array $options): static
     {
         foreach ($options as $key => $value) {
+            if ($key === 'url-prefix') {
+                $this->urlPrefix($value);
+                continue;
+            }
             if (in_array($key, ['translation', 'metadata', 'media'], true)) {
                 $this->{$key}($value);
                 continue;
@@ -42,6 +46,24 @@ class TaxonomyTypeBuilder
     public function get(): array
     {
         return $this->registry->get($this->type);
+    }
+
+    /** Set the website path prefix, without changing the stored slug. */
+    public function urlPrefix(string $prefix): static
+    {
+        $prefix = trim($prefix, '/');
+        if ($prefix !== '' && !preg_match('~^[\pL\pN_-]+(?:/[\pL\pN_-]+)*$~u', $prefix)) {
+            throw new \InvalidArgumentException('The URL prefix must contain path segments only.');
+        }
+        $this->setTypeParam('url-prefix', $prefix);
+
+        return $this;
+    }
+
+    /** Return the website path prefix registered for this type. */
+    public function getUrlPrefix(): string
+    {
+        return (string) $this->getTypeParam('url-prefix', '');
     }
 
     protected function setTypeParam(string $key, mixed $value): void

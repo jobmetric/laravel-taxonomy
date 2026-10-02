@@ -200,6 +200,11 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
                 : $taxonomy->parent;
         }
 
+        $prefix = (string) static::typeRegistry()->getOption($this->type, 'url-prefix', '');
+        if ($prefix !== '') {
+            array_unshift($segments, trim($prefix, '/'));
+        }
+
         return implode('/', $segments);
     }
 
