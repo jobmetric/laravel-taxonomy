@@ -266,7 +266,7 @@ class Taxonomy
             $taxonomy->save();
 
             if (isset($data['slug'])) {
-                $taxonomy->dispatchUrl($data['slug'], $data['type']);
+                $taxonomy->dispatchSlug($data['slug'], $data['type']);
             }
 
             foreach ($data['metadata'] ?? [] as $metadata_key => $metadata_value) {
@@ -378,7 +378,7 @@ class Taxonomy
             $taxonomy->save();
 
             if (array_key_exists('slug', $data)) {
-                $taxonomy->dispatchUrl($data['slug'], $taxonomy->type);
+                $taxonomy->dispatchSlug($data['slug'], $taxonomy->type);
             }
 
             if (array_key_exists('metadata', $data)) {
@@ -532,7 +532,7 @@ class Taxonomy
      * @return string
      * @throws Throwable
      */
-    public function getName(int $taxonomy_id, bool $concat = true, string $locale = null): string
+    public function getName(int $taxonomy_id, bool $concat = true, ?string $locale = null): string
     {
         /**
          * @var TaxonomyModel $taxonomy
