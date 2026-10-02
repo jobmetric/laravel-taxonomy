@@ -30,7 +30,7 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
             ->hasMigration()
             ->hasTranslation()
             ->registerClass('Taxonomy', Taxonomy::class)
-            ->registerClass('TaxonomyTypeRegistry', TaxonomyTypeRegistry::class, RegisterClassTypeEnum::SINGLETON());
+            ->registerClass(TaxonomyTypeRegistry::class, TaxonomyTypeRegistry::class, RegisterClassTypeEnum::SINGLETON());
     }
 
     /**
@@ -40,6 +40,8 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
      */
     public function afterRegisterPackage(): void
     {
+        $this->app->alias(TaxonomyTypeRegistry::class, 'TaxonomyTypeRegistry');
+
         foreach (config('taxonomy.types', []) as $type => $options) {
             FacadeTaxonomyTypeRegistry::register($type, is_array($options) ? $options : []);
         }

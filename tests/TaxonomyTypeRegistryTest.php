@@ -8,6 +8,11 @@ use Tests\TestCase;
 
 class TaxonomyTypeRegistryTest extends TestCase
 {
+    public function test_facade_and_model_use_the_same_registry(): void
+    {
+        $this->assertSame(\JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry::getFacadeRoot(), \JobMetric\Taxonomy\Models\Taxonomy::typeRegistry());
+    }
+
     public function test_prefix_is_applied_once_before_the_ancestor_path(): void
     {
         $registry = new TaxonomyTypeRegistry;
