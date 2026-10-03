@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.3
+
+- Detach media relations when a taxonomy is deleted, including descendants deleted through the service. Shared media files are preserved.
+
 ## 4.2.2
 
 - Scope translated name uniqueness to siblings, including an explicit NULL parent for roots.

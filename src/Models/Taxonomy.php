@@ -63,6 +63,14 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
         'translation'
     ];
 
+    /** Detach media references after deletion without deleting shared files. */
+    protected static function booted(): void
+    {
+        static::deleted(function (self $taxonomy): void {
+            $taxonomy->files()->detach();
+        });
+    }
+
     /**
      * The attributes that should be cast.
      *
