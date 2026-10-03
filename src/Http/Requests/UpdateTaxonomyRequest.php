@@ -65,7 +65,9 @@ class UpdateTaxonomyRequest extends FormRequest
 
         $taxonomyType = TaxonomyTypeRegistry::for($type);
 
-        $this->renderMultiTranslationFiled($rules, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $taxonomy_id, parent_id: $parent_id, parent_where: ['type' => $type]);
+        $scope = ['type' => $type, 'parent_id' => array_key_exists('parent_id', $this->data)
+            ? $this->data['parent_id'] : Taxonomy::query()->findOrFail($taxonomy_id)->parent_id];
+        $this->renderMultiTranslationFiled($rules, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $taxonomy_id, parent_id: $parent_id, parent_where: $scope);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
         $this->renderMediaFiled($rules, $taxonomyType->hasBaseMedia(), $taxonomyType->getMedia());
         $this->renderUrlField($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type, $taxonomy_id);

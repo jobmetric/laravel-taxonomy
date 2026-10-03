@@ -59,7 +59,8 @@ class StoreTaxonomyRequest extends FormRequest
 
         $taxonomyType = TaxonomyTypeRegistry::for($type);
 
-        $this->renderTranslationFiled($rules, $this->data, $taxonomyType->getTranslation(), Taxonomy::class, parent_id: $parent_id, parent_where: ['type' => $type]);
+        $scope = ['type' => $type, 'parent_id' => $this->data['parent_id'] ?? null];
+        $this->renderTranslationFiled($rules, $this->data, $taxonomyType->getTranslation(), Taxonomy::class, parent_id: $parent_id, parent_where: $scope);
         $this->renderMetadataFiled($rules, $taxonomyType->getMetadata());
         $this->renderMediaFiled($rules, $taxonomyType->hasBaseMedia(), $taxonomyType->getMedia());
         $this->renderUrlField($rules, $taxonomyType->hasUrl(), Taxonomy::class, $type);

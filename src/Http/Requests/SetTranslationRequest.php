@@ -61,7 +61,7 @@ class SetTranslationRequest extends FormRequest
 
         $taxonomyType = TaxonomyTypeRegistry::for($type);
 
-        $this->renderTranslationFiled($rules, $form_data, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $id, parent_id: $taxonomy->parent_id, parent_where: ['type' => $type]);
+        $this->renderTranslationFiled($rules, $form_data, $taxonomyType->getTranslation(), Taxonomy::class, object_id: $id, parent_id: $taxonomy->parent_id, parent_where: ['type' => $type, 'parent_id' => $taxonomy->parent_id]);
 
         return $rules;
     }

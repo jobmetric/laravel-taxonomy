@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.2.2
+
+- Scope translated name uniqueness to siblings, including an explicit NULL parent for roots.
+- Preserve the current parent scope when partial updates omit parent_id, and apply the same scope to translation edits.
+
 ## 4.2.1
 
 - Resolve class-injected and facade taxonomy registries to the same singleton, including canonical URL generation.
