@@ -85,12 +85,17 @@ trait HasTaxonomy
         }
 
         $multiple = false;
+        $typeDefinition = \JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry::for($taxonomy->type);
+        if ($typeDefinition->hasLeafOnly() && Taxonomy::query()->where('parent_id', $taxonomy_id)->exists()) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['taxonomy_id' => trans('taxonomy::base.management.leaf_only')]);
+        }
         if (array_key_exists('multiple', $taxonomyAllowTypes[$collection])) {
             if ($taxonomyAllowTypes[$collection]['multiple']) {
                 $multiple = true;
             }
         }
 
+        $multiple = $multiple && $typeDefinition->hasMultipleSelection();
         if ($multiple) {
             TaxonomyRelation::query()->updateOrInsert([
                 'taxonomy_id' => $taxonomy_id,

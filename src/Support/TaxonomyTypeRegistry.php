@@ -13,6 +13,7 @@ class TaxonomyTypeRegistry
     public function register(string $type, array $options = []): TaxonomyTypeBuilder
     {
         $isNew = ! $this->has($type);
+        $previous = $this->types[$type] ?? null;
         $this->types[$type] ??= [];
 
         $builder = new TaxonomyTypeBuilder($type, $this);
@@ -21,7 +22,16 @@ class TaxonomyTypeRegistry
             $builder->bootDefaults();
         }
 
-        return $builder->apply($options);
+        try {
+            return $builder->apply($options);
+        } catch (\Throwable $exception) {
+            if ($isNew) {
+                unset($this->types[$type]);
+            } else {
+                $this->types[$type] = $previous;
+            }
+            throw $exception;
+        }
     }
 
     public function get(string $type): array

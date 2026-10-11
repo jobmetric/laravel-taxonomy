@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'management' => [
+        'invalid_parent' => 'Choose a valid parent or destination outside this subtree.',
+        'max_depth' => 'This change exceeds the maximum of :depth levels.',
+        'leaf_only' => 'Only categories without children can be selected.',
+        'used_leaf' => 'A category linked to content cannot become a parent.',
+    ],
 
     /*
     |--------------------------------------------------------------------------

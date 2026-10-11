@@ -254,6 +254,10 @@ class Taxonomy
         return DB::transaction(function () use ($data) {
             $taxonomyType = TaxonomyTypeRegistry::for($data['type']);
 
+            if ($taxonomyType->hasHierarchical()) {
+                app(\JobMetric\Taxonomy\Support\TaxonomyHierarchyPolicy::class)->validate($data['type'], null, isset($data['parent_id']) ? (int) $data['parent_id'] : null);
+            }
+
             $hierarchical = $taxonomyType->hasHierarchical();
             $taxonomy = new TaxonomyModel;
             $taxonomy->type = $data['type'];
@@ -345,6 +349,10 @@ class Taxonomy
 
         return DB::transaction(function () use ($taxonomy_id, $data, $taxonomy) {
             $taxonomyType = TaxonomyTypeRegistry::for($taxonomy->type);
+
+            if ($taxonomyType->hasHierarchical() && array_key_exists('parent_id', $data)) {
+                app(\JobMetric\Taxonomy\Support\TaxonomyHierarchyPolicy::class)->validate($taxonomy->type, $taxonomy_id, isset($data['parent_id']) ? (int) $data['parent_id'] : null);
+            }
 
             $hierarchical = $taxonomyType->hasHierarchical();
 

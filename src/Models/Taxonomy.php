@@ -95,6 +95,25 @@ class Taxonomy extends Model implements MediaContract, CommentContract, MemberCo
         return app(TaxonomyTypeRegistry::class);
     }
 
+    /**
+     * Return the taxonomy types and collections allowed for this taxonomy type.
+     *
+     * @return array<string, array{type: string, multiple: bool}>
+     */
+    public function taxonomyAllowTypes(): array
+    {
+        $types = (array) static::typeRegistry()->getOption((string) $this->type, 'taxonomy-types', []);
+
+        foreach ($types as $collection => $definition) {
+            $taxonomyType = (string) ($definition['type'] ?? '');
+            if ($taxonomyType === '' || ! \JobMetric\Taxonomy\Facades\TaxonomyTypeRegistry::has($taxonomyType)) {
+                throw new \InvalidArgumentException("Taxonomy type [{$taxonomyType}] in taxonomy collection [{$collection}] is not registered.");
+            }
+        }
+
+        return $types;
+    }
+
     public function getTable()
     {
         return config('taxonomy.tables.taxonomy', parent::getTable());

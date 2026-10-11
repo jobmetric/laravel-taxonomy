@@ -1,25 +1,10 @@
 # Changelog
 
-## 4.2.3
+## 4.3.0
 
-- Detach media relations when a taxonomy is deleted, including descendants deleted through the service. Shared media files are preserved.
-
-## 4.2.2
-
-- Scope translated name uniqueness to siblings, including an explicit NULL parent for roots.
-- Preserve the current parent scope when partial updates omit parent_id, and apply the same scope to translation edits.
-
-## 4.2.1
-
-- Resolve class-injected and facade taxonomy registries to the same singleton, including canonical URL generation.
-
-## 4.2.0
-
-- Add `urlPrefix('catalog/categories')` and `getUrlPrefix()` to taxonomy type builders.
-- Prefix canonical hierarchical URLs once, while keeping stored slugs unchanged.
-- Accept the same validated `url-prefix` option in array/config registration. Changing a prefix requires rebuilding existing URLs with `Taxonomy::rebuildAllUrls()`; no migration is run automatically.
-
-## 4.1.8
-
-- Fix storing/updating taxonomy slugs by using URL 3.x's `dispatchSlug` API.
-- Verified with the Jobic gallery/URL integration regression test; no schema change.
+- Expose administration and management capabilities through dedicated builder traits.
+- Support equivalent `hasSeo()` and `seo()` chains with translated meta fields and a sharing-image collection.
+- Provide named taxonomy collections and declarative list filters.
+- Preserve registry definitions when invalid configuration is rejected.
+- Validate hierarchy depth and leaf-only policies for moves and attachments.
+- Add transactional taxonomy move and merge operations.
