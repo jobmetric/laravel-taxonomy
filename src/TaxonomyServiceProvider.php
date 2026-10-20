@@ -51,4 +51,22 @@ class TaxonomyServiceProvider extends PackageCoreServiceProvider
         Route::model('jm_taxonomy_path', TaxonomyPath::class);
         Route::model('jm_taxonomy_relation', TaxonomyRelation::class);
     }
+    /**
+     * Register committed business outcome definitions alongside legacy events.
+     *
+     * @return void
+     */
+    public function afterBootPackage(): void
+    {
+        if ($this->app->bound('EventRegistry')) {
+            $registry = $this->app->make('EventRegistry');
+            $registry->register(\JobMetric\Taxonomy\Events\Taxonomy\TaxonomyStoreCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\Taxonomy\TaxonomyUpdateCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\Taxonomy\TaxonomyDeleteCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\Taxonomy\TaxonomyMoveCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\TaxonomyRelation\TaxonomyRelationAttachCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\TaxonomyRelation\TaxonomyRelationDetachCommittedEvent::class);
+            $registry->register(\JobMetric\Taxonomy\Events\Taxonomy\TaxonomyMergeCommittedEvent::class);
+        }
+    }
 }

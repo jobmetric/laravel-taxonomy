@@ -24,11 +24,16 @@ class TaxonomyManagement
                 throw ValidationException::withMessages(['parent_id' => trans('taxonomy::base.management.invalid_parent')]);
             }
             app(TaxonomyHierarchyPolicy::class)->validate($type, $id, $parentId);
+            $outcomeBefore = \JobMetric\EventSystem\Support\OutcomeState::capture($record);
             $siblings = $nodes->filter(fn ($item) => $item->parent_id === $parentId && $item->id !== $id)->sortBy('ordering')->values();
             $position = min(max(0, $position), $siblings->count());
             $siblings->splice($position, 0, [$record]);
             $this->update($record, ['parent_id' => $parentId]);
             foreach ($siblings as $index => $sibling) $this->update($sibling, ['ordering' => $index]);
+
+            if ($outcomeBefore !== \JobMetric\EventSystem\Support\OutcomeState::capture($record)) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyMoveCommittedEvent($record->getKey()), $record->getConnectionName());
+            }
             return $record->fresh();
         });
     }
@@ -73,6 +78,9 @@ class TaxonomyManagement
                 $oldUrl->save();
             }
             TaxonomyService::delete($sourceId);
+            if (true) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyMergeCommittedEvent($sourceId, $targetId), $target->getConnectionName());
+            }
             return $target->fresh();
         });
     }

@@ -303,6 +303,9 @@ class Taxonomy
             }
 
             event(new TaxonomyStoreEvent($taxonomy, $data, $hierarchical));
+            if ($taxonomy->exists) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyStoreCommittedEvent($taxonomy->getKey()), $taxonomy->getConnectionName());
+            }
 
             return [
                 'ok' => true,
@@ -348,6 +351,7 @@ class Taxonomy
         }
 
         return DB::transaction(function () use ($taxonomy_id, $data, $taxonomy) {
+            $outcomeBefore = \JobMetric\EventSystem\Support\OutcomeState::capture($taxonomy, ['translations', 'metas', 'files', 'slugRecord']);
             $taxonomyType = TaxonomyTypeRegistry::for($taxonomy->type);
 
             if ($taxonomyType->hasHierarchical() && array_key_exists('parent_id', $data)) {
@@ -447,6 +451,9 @@ class Taxonomy
             }
 
             event(new TaxonomyUpdateEvent($taxonomy, $data, $change_parent_id));
+            if ($outcomeBefore !== \JobMetric\EventSystem\Support\OutcomeState::capture($taxonomy, ['translations', 'metas', 'files', 'slugRecord'])) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyUpdateCommittedEvent($taxonomy->getKey()), $taxonomy->getConnectionName());
+            }
 
             return [
                 'ok' => true,
@@ -520,6 +527,9 @@ class Taxonomy
             }
 
             event(new TaxonomyDeleteEvent($taxonomy));
+            if (! $taxonomy->exists) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyDeleteCommittedEvent($taxonomy->getKey()), $taxonomy->getConnectionName());
+            }
 
             return [
                 'ok' => true,
@@ -654,6 +664,7 @@ class Taxonomy
     {
         return DB::transaction(function () use ($data) {
             $taxonomy = TaxonomyModel::find($data['translatable_id'] ?? null);
+            $outcomeBefore = \JobMetric\EventSystem\Support\OutcomeState::capture($taxonomy, ['translations', 'metas', 'files', 'slugRecord']);
 
             foreach ($data['translation'] as $locale => $translation_data) {
                 foreach ($translation_data as $translation_key => $translation_value) {
@@ -662,6 +673,11 @@ class Taxonomy
                     ]);
                 }
 
+            }
+
+
+            if ($outcomeBefore !== \JobMetric\EventSystem\Support\OutcomeState::capture($taxonomy, ['translations', 'metas', 'files', 'slugRecord'])) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\Taxonomy\TaxonomyUpdateCommittedEvent($taxonomy->getKey()), $taxonomy->getConnectionName());
             }
 
             return [

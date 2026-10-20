@@ -47,7 +47,7 @@ trait HasTaxonomy
     {
         return $this->morphToMany(Taxonomy::class, 'taxonomizable', config('taxonomy.tables.taxonomy_relation'))
             ->withPivot('collection')
-            ->withTimestamps(['created_at']);
+            ->withPivot('created_at');
     }
 
     /**
@@ -96,6 +96,7 @@ trait HasTaxonomy
         }
 
         $multiple = $multiple && $typeDefinition->hasMultipleSelection();
+        $outcomeAlreadyAttached = TaxonomyRelation::query()->where(['taxonomy_id' => $taxonomy_id, 'taxonomizable_type' => get_class($this), 'taxonomizable_id' => $this->getKey(), 'collection' => $collection])->exists();
         if ($multiple) {
             TaxonomyRelation::query()->updateOrInsert([
                 'taxonomy_id' => $taxonomy_id,
@@ -111,6 +112,11 @@ trait HasTaxonomy
             ], [
                 'taxonomy_id' => $taxonomy_id
             ]);
+        }
+
+
+        if (! $outcomeAlreadyAttached) {
+            app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\TaxonomyRelation\TaxonomyRelationAttachCommittedEvent($this->getMorphClass(), $this->getKey(), $taxonomy_id), $this->getConnectionName());
         }
 
         $taxonomy->load([
@@ -162,7 +168,10 @@ trait HasTaxonomy
             if ($taxonomy->id == $taxonomy_id) {
                 $data = TaxonomyResource::make($taxonomy);
 
-                $this->taxonomies()->detach($taxonomy_id);
+                $outcomeDetached = $this->taxonomies()->detach($taxonomy_id);
+                if ($outcomeDetached > 0) {
+                    app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Taxonomy\Events\TaxonomyRelation\TaxonomyRelationDetachCommittedEvent($this->getMorphClass(), $this->getKey(), $taxonomy_id), $this->getConnectionName());
+                }
 
                 return [
                     'ok' => true,
